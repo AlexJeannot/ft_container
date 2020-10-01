@@ -5,9 +5,6 @@
 #define OK "\033[38;5;40mOK\033[0m"
 #define KO "\033[38;5;124mKO\033[0m"
 
-//    std::cout << vBase.size() << std::endl;
-//    std::cout << vCustom.size() << std::endl;
-
 void fOK(std::string test)
 {
     std::cout << OK << "\033[38;5;43m >> " << test << "\033[0m" << std::endl;
@@ -18,10 +15,159 @@ void fKO(std::string test)
     std::cout << KO << "\033[38;5;43m >> " << test << "\033[0m" << std::endl;
 }
 
+template <typename T>
+void testBasics(std::vector<T> vBase, ft::Vector<T> vCustom)
+{
+    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
+    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
+    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
+    for (int count = 0; count < vBase.size(); count++)
+    {
+        if (vBase[count] != vCustom[count])
+        {
+            fKO("vector's elements");
+            break;
+        }
+    }
+}
+
+template <typename T>
+void testRelationalOperators(std::vector<T> vBase, std::vector<T> cmp_vBase,
+                            ft::Vector<T> vCustom, ft::Vector<T> cmp_vCustom)
+{
+    ((vBase == cmp_vBase) == (vCustom == cmp_vCustom)) ? fOK("==") : fKO("==");
+    ((vBase != cmp_vBase) == (vCustom != cmp_vCustom)) ? fOK("!=") : fKO("!=");
+    ((vBase < cmp_vBase) == (vCustom < cmp_vCustom)) ? fOK("<") : fKO("<");
+    ((vBase <= cmp_vBase) == (vCustom <= cmp_vCustom)) ? fOK("<=") : fKO("<=");
+    ((vBase > cmp_vBase) == (vCustom > cmp_vCustom)) ? fOK(">") : fKO(">");
+    ((vBase >= cmp_vBase) == (vCustom >= cmp_vCustom)) ? fOK(">=") : fKO(">=");
+}
+
+template <typename T>
+void testIterator(std::vector<T> vBase, ft::Vector<T> vCustom)
+{
+    bool verif = true;
+    typename std::vector<T>::iterator itBase;
+    typename ft::Vector<T>::iterator itCustom;
+    itBase = vBase.begin();
+    itCustom = vCustom.begin();
+
+    (*(vBase.begin()) == *(vCustom.begin())) ? fOK("begin()") : fKO("begin()");
+    (*(vBase.cbegin()) == *(vCustom.cbegin())) ? fOK("cbegin()") : fKO("cbegin()");
+    (*(vBase.end() - 1) == *(vCustom.end() - 1)) ? fOK("end()") : fKO("end()");
+    (*(vBase.cend() - 1) == *(vCustom.cend() - 1)) ? fOK("cend()") : fKO("cend()");
+
+    while (itBase != vBase.end())
+    {
+        if (*itBase++ != *itCustom++)
+            verif = false;
+    }
+    (verif == true) ? fOK("Operator++(int)") : fKO("Operator++(int)");
+
+    verif = true;
+    itBase = vBase.begin();
+    itCustom = vCustom.begin();
+    for (int count = 0; count < 2; count++)
+    {
+        if (*++itBase != *++itCustom)
+            verif = false;
+    }
+    (verif == true) ? fOK("Operator++()") : fKO("Operator++()");
+
+    itBase = vBase.begin() + 4;
+    itCustom = vCustom.begin() + 4;
+    (*(itBase) == *(itCustom)) ? fOK("Operator+()") : fKO("Operator+()");
+
+    itBase = vBase.end() - 3;
+    itCustom = vCustom.end() - 3;
+    (*(itBase) == *(itCustom)) ? fOK("Operator-()") : fKO("Operator-()");
+
+    itBase += 2;
+    itCustom += 2;
+    (*(itBase) == *(itCustom)) ? fOK("Operator+=()") : fKO("Operator+=()");
+
+    itBase -= 1;
+    itCustom -= 1;
+    (*(itBase) == *(itCustom)) ? fOK("Operator-=()") : fKO("Operator-=()");
+
+    (itBase[1] == itCustom[1]) ? fOK("Operator[]()") : fKO("Operator[]()");
+
+    ((vBase.begin() == vBase.begin()) == (vCustom.begin() == vCustom.begin())) ? fOK("Operator==()") : fKO("Operator==()");
+    ((vBase.begin() != vBase.begin()) == (vCustom.begin() != vCustom.begin())) ? fOK("Operator!=()") : fKO("Operator!=()"); 
+    ((vBase.begin() < vBase.begin() + 2) == (vCustom.begin() < vCustom.begin() + 2)) ? fOK("Operator<()") : fKO("Operator<()");
+    ((vBase.begin() <= vBase.begin()) == (vCustom.begin() <= vCustom.begin())) ? fOK("Operator<=()") : fKO("Operator<=()");
+    ((vBase.begin() > vBase.begin() + 2) == (vCustom.begin() > vCustom.begin() + 2)) ? fOK("Operator>()") : fKO("Operator>()");
+    ((vBase.begin() >= vBase.begin()) == (vCustom.begin() >= vCustom.begin())) ? fOK("Operator>=()") : fKO("Operator>=()");
+}
+
+
+template <typename T>
+void testReverseIterator(std::vector<T> vBase, ft::Vector<T> vCustom)
+{
+    bool verif = true;
+    typename std::vector<T>::reverse_iterator ritBase;
+    typename ft::Vector<T>::reverse_iterator ritCustom;
+    ritBase = vBase.rbegin();
+    ritCustom = vCustom.rbegin();
+
+    (*(vBase.rbegin()) == *(vCustom.rbegin())) ? fOK("rbegin()") : fKO("rbegin()");
+    (*(vBase.crbegin()) == *(vCustom.crbegin())) ? fOK("crbegin()") : fKO("crbegin()");
+    (*(vBase.rend() - 1) == *(vCustom.rend() - 1)) ? fOK("rend()") : fKO("rend()");
+    (*(vBase.crend() - 1) == *(vCustom.crend() - 1)) ? fOK("crend()") : fKO("crend()");
+
+    while (ritBase != vBase.rend())
+    {
+        if (*ritBase++ != *ritCustom++)
+            verif = false;
+    }
+    (verif == true) ? fOK("Operator++(int)") : fKO("Operator++(int)");
+
+    verif = true;
+    ritBase = vBase.rbegin();
+    ritCustom = vCustom.rbegin();
+    for (int count = 0; count < 2; count++)
+    {
+        if (*++ritBase != *++ritCustom)
+            verif = false;
+    }
+    (verif == true) ? fOK("Operator++()") : fKO("Operator++()");
+
+    ritBase = vBase.rbegin() + 4;
+    ritCustom = vCustom.rbegin() + 4;
+    (*(ritBase) == *(ritCustom)) ? fOK("Operator+()") : fKO("Operator+()");
+
+    ritBase = vBase.rend() - 3;
+    ritCustom = vCustom.rend() - 3;
+    (*(ritBase) == *(ritCustom)) ? fOK("Operator-()") : fKO("Operator-()");
+
+    ritBase += 2;
+    ritCustom += 2;
+    (*(ritBase) == *(ritCustom)) ? fOK("Operator+=()") : fKO("Operator+=()");
+
+    ritBase -= 1;
+    ritCustom -= 1;
+    (*(ritBase) == *(ritCustom)) ? fOK("Operator-=()") : fKO("Operator-=()");
+
+    (ritBase[1] == ritCustom[1]) ? fOK("Operator[]()") : fKO("Operator[]()");
+
+    ((vBase.rbegin() == vBase.rbegin()) == (vCustom.rbegin() == vCustom.rbegin())) ? fOK("Operator==()") : fKO("Operator==()");
+    ((vBase.rbegin() != vBase.rbegin()) == (vCustom.rbegin() != vCustom.rbegin())) ? fOK("Operator!=()") : fKO("Operator!=()"); 
+    ((vBase.rbegin() < vBase.rbegin() + 2) == (vCustom.rbegin() < vCustom.rbegin() + 2)) ? fOK("Operator<()") : fKO("Operator<()");
+    ((vBase.rbegin() <= vBase.rbegin()) == (vCustom.rbegin() <= vCustom.rbegin())) ? fOK("Operator<=()") : fKO("Operator<=()");
+    ((vBase.rbegin() > vBase.rbegin() + 2) == (vCustom.rbegin() > vCustom.rbegin() + 2)) ? fOK("Operator>()") : fKO("Operator>()");
+    ((vBase.rbegin() >= vBase.rbegin()) == (vCustom.rbegin() >= vCustom.rbegin())) ? fOK("Operator>=()") : fKO("Operator>=()");
+}
+
+
+
+
+
+template <typename T>
 void testVector(void)
 {
-    std::vector<int> vBase;
-    ft::Vector<int> vCustom;
+    std::vector<T> vBase;
+    ft::Vector<T> vCustom;
 
     /* Test size() and capacity() at initialization */
     std::cout << "======= TEST 1 =======" << std::endl;
@@ -35,28 +181,17 @@ void testVector(void)
 
 
     /* Test size(), capacity() and front() after adding one element */
-    vBase.push_back(0);
-    vCustom.push_back(0);
+    vBase.push_back(33);
+    vCustom.push_back(33);
     std::cout << std::endl << "======= TEST 3 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity() and element comparison after superior resize() */
     vBase.resize(10);
     vCustom.resize(10);
     std::cout << std::endl << "======= TEST 4 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity() and front() after clear() */
@@ -65,7 +200,6 @@ void testVector(void)
     std::cout << std::endl << "======= TEST 5 =======" << std::endl;
     (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
     (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
 
 
     /* Test size(), capacity() and element comparison after inferior resize() */
@@ -77,64 +211,42 @@ void testVector(void)
     vBase.resize(5);
     vCustom.resize(5);
     std::cout << std::endl << "======= TEST 6 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity() and element comparison after equal resize() */
     vBase.resize(5);
     vCustom.resize(5);
     std::cout << std::endl << "======= TEST 7 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
 
     /* Test size() and capacity() after reserve() equal to zero */
     vBase.reserve(0);
     vCustom.reserve(0);
     std::cout << std::endl << "======= TEST 8 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+    testBasics(vBase, vCustom);
 
 
     /* Test size() and capacity() after reserve() inferior than capacity() */
     vBase.reserve(1);
     vCustom.reserve(1);
     std::cout << std::endl << "======= TEST 9 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+    testBasics(vBase, vCustom);
 
 
     /* Test size() and capacity() after reserve() inferior than 2xsize() */
     vBase.reserve(8);
     vCustom.reserve(8);
     std::cout << std::endl << "======= TEST 10 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+    testBasics(vBase, vCustom);
 
 
     /* Test size() and capacity() after reserve() superior than 2xsize() */
     vBase.reserve(25);
     vCustom.reserve(25);
     std::cout << std::endl << "======= TEST 11 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+    testBasics(vBase, vCustom);
 
 
     /* Test empty() before clear() */
@@ -147,7 +259,6 @@ void testVector(void)
     vCustom.clear();
     std::cout << std::endl << "======= TEST 13 =======" << std::endl;
     (vBase.empty() == vCustom.empty()) ? fOK("empty()") : fKO("empty()");
-
 
 
     /* Test at() in bounds */
@@ -184,63 +295,29 @@ void testVector(void)
 
     /* Test front() and back() */
     std::cout << std::endl << "======= TEST 16 =======" << std::endl;
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison after assign() with another vector's iterators */
-    std::vector<int> vBase2(vBase);
+    std::vector<T> vBase2(vBase);
     vBase.assign(vBase2.begin(), (vBase2.end() - 5));
     vCustom.assign(vBase2.begin(), (vBase2.end() - 5));
     std::cout << std::endl << "======= TEST 17 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison after assign() with same vector's iterators */
     vBase.assign(vBase.begin() + 2, (vBase.end()));
     vCustom.assign(vCustom.begin() + 2, (vCustom.end()));
     std::cout << std::endl << "======= TEST 18 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
     /* Test size(), capacity(), front(), back() and element comparison after assign() 
     with a number of value inferior to capacity() */
     vBase.assign(1, 1);
     vCustom.assign(1, 1);
     std::cout << std::endl << "======= TEST 19 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison after assign() 
@@ -248,35 +325,13 @@ void testVector(void)
     vBase.assign(1000, 1);
     vCustom.assign(1000, 1);
     std::cout << std::endl << "======= TEST 20 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
     /* Test size(), capacity(), front(), back() and element comparison after pop_back() */
     vBase.pop_back();
     vCustom.pop_back();
     std::cout << std::endl << "======= TEST 21 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
     /* Test size(), capacity(), front(), back() and element comparison
     after insert() at begin() */
@@ -287,18 +342,7 @@ void testVector(void)
     vBase.insert(vBase.begin(), 4);
     vCustom.insert(vCustom.begin(), 4);
     std::cout << std::endl << "======= TEST 22 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
     /* Test size(), capacity(), front(), back() and element comparison
     after insert() at end() */
@@ -307,18 +351,7 @@ void testVector(void)
     vBase.insert(vBase.end(), 6);
     vCustom.insert(vCustom.end(), 6);
     std::cout << std::endl << "======= TEST 23 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison
@@ -328,18 +361,8 @@ void testVector(void)
     vBase.insert(vBase.begin() + 2, 2);
     vCustom.insert(vCustom.begin() + 2, 2);
     std::cout << std::endl << "======= TEST 24 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
+
 
 
     /* Test size(), capacity(), front(), back() and element comparison
@@ -351,19 +374,15 @@ void testVector(void)
     vBase.insert(vBase.begin(), 2, 3);
     vCustom.insert(vCustom.begin(), 2, 3);
     std::cout << std::endl << "======= TEST 25 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements at begin() */
+    vBase.insert(vBase.begin(), 0, 5);
+    vCustom.insert(vCustom.begin(), 0, 5);
+    std::cout << std::endl << "======= TEST 26 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison
@@ -372,19 +391,8 @@ void testVector(void)
     vCustom.insert(vCustom.end(), 10, 5);
     vBase.insert(vBase.end(), 10, 6);
     vCustom.insert(vCustom.end(), 10, 6);
-    std::cout << std::endl << "======= TEST 26 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison
@@ -393,20 +401,8 @@ void testVector(void)
     vCustom.insert(vCustom.begin() + 8, 4, 1);
     vBase.insert(vBase.begin() + 8, 4, 2);
     vCustom.insert(vCustom.begin() + 8, 4, 2);
-    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
-
+    std::cout << std::endl << "======= TEST 28 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
 
     /* Test size(), capacity(), front(), back() and element comparison
@@ -415,67 +411,73 @@ void testVector(void)
     vCustom.clear();
     vBase.insert(vBase.begin(), vBase2.begin(), vBase2.end());
     vCustom.insert(vCustom.begin(), vBase2.begin(), vBase2.end());
-    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    std::cout << std::endl << "======= TEST 29 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
 
     /* Test size(), capacity(), front(), back() and element comparison
     after insert() n elements from another vector at begin() + 2 */
     vBase.insert(vBase.begin() + 2, vBase2.begin(), vBase2.end());
     vCustom.insert(vCustom.begin() + 2, vBase2.begin(), vBase2.end());
-    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    std::cout << std::endl << "======= TEST 30 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
 
     /* Test size(), capacity(), front(), back() and element comparison
     after insert() n elements from same vector at begin() */
     vBase.insert(vBase.begin(), vBase.begin(), vBase.end());
     vCustom.insert(vCustom.begin(), vCustom.begin(), vCustom.end());
-    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
-    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
-    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
-    {
-        if (vBase[count] != vCustom[count])
-        {
-            fKO("vector's elements");
-            break;
-        }
-    }
+    std::cout << std::endl << "======= TEST 31 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
 
     /* Test size(), capacity(), front(), back() and element comparison
     after insert() n elements from same vector at begin() + 2*/
     vBase.insert(vBase.begin() + 2, vBase.begin(), vBase.end());
     vCustom.insert(vCustom.begin() + 2, vCustom.begin(), vCustom.end());
-    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 32 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() 0 elements from same vector at begin() */
+    vBase.insert(vBase.begin(), vBase.begin(), vBase.begin());
+    vCustom.insert(vCustom.begin(), vCustom.begin(), vCustom.begin());
+    std::cout << std::endl << "======= TEST 33 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after erase() at begin() */
+    vBase.erase(vBase.begin());
+    vCustom.erase(vCustom.begin());
+    std::cout << std::endl << "======= TEST 34 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+    /* Test size(), capacity(), front(), back() and element comparison after erase() at begin() + 2 */
+    vBase.erase(vBase.begin() + 2);
+    vCustom.erase(vCustom.begin() + 2);
+    std::cout << std::endl << "======= TEST 35 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after erase() from begin() to begin() */
+    vBase.erase(vBase.begin(), vBase.begin());
+    vCustom.erase(vCustom.begin(), vCustom.begin());
+    std::cout << std::endl << "======= TEST 36 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after erase() from begin() to end() */
+    vBase.erase(vBase.begin(), vBase.end());
+    vCustom.erase(vCustom.begin(), vCustom.end());
+    std::cout << std::endl << "======= TEST 37 =======" << std::endl;
     (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
     (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
-    (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
     for (int count = 0; count < vBase.size(); count++)
     {
+
         if (vBase[count] != vCustom[count])
         {
             fKO("vector's elements");
@@ -484,322 +486,480 @@ void testVector(void)
     }
 
 
+    /* Test relational operators with empty vectors */
+    vBase.clear();
+    vCustom.clear();
+    std::vector<T> cmp_vBase(vBase);
+    ft::Vector<T> cmp_vCustom(vCustom);
+    std::cout << std::endl << "======= TEST 38 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+    /* Test relational operators with one element in vectors */
+    vBase.push_back(1);
+    vCustom.push_back(1);
+    std::cout << std::endl << "======= TEST 39 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+    /* Test relational operators with same element number and same values in vectors */
+    cmp_vBase.push_back(1);
+    cmp_vCustom.push_back(1);
+    std::cout << std::endl << "======= TEST 40 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+    /* Test relational operators with same element number but different values in vectors */
+    cmp_vBase.push_back(1);
+    cmp_vCustom.push_back(1);
+    vBase.push_back(2);
+    vCustom.push_back(2);
+    std::cout << std::endl << "======= TEST 41 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
 
 
+    /* Test size(), capacity(), front(), back() and element comparison
+    after swap() of same size vectors */
+    vBase.swap(cmp_vBase);
+    vCustom.swap(cmp_vCustom);
+    std::cout << std::endl << "======= TEST 42 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after swap() of different size vectors (inferior size) */
+    cmp_vBase.push_back(3);
+    cmp_vCustom.push_back(3);
+    vBase.swap(cmp_vBase);
+    vCustom.swap(cmp_vCustom);
+    std::cout << std::endl << "======= TEST 43 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after swap() of different size vectors (superior size) */
+    vBase.insert(vBase.end(), 3, 4);
+    vCustom.insert(vCustom.end(), 3, 4);
+    vBase.swap(cmp_vBase);
+    vCustom.swap(cmp_vCustom);
+    std::cout << std::endl << "======= TEST 44 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+    /* Test normal iterators */
+    vBase.clear();
+    vCustom.clear();
+    for (int count = 0; count < 10; count++)
+    {
+        vBase.push_back(count);
+        vCustom.push_back(count);
+    }
+    std::cout << std::endl << "======= TEST 45 =======" << std::endl;
+    testIterator(vBase, vCustom);
 
 
+   /* Test reverse iterators */
 
-
-
-
+    std::cout << std::endl << "======= TEST 46 =======" << std::endl;
+    testReverseIterator(vBase, vCustom);
 
 }
 
-int main()
+
+void testVectorStr(void)
 {
-    testVector();
-    return (0);
-}
+    std::vector<std::string> vBase;
+    ft::Vector<std::string> vCustom;
 
-/*
-int main()
-{
+    /* Test size() and capacity() at initialization */
+    std::cout << "======= TEST 1 =======" << std::endl;
+    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
+    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
 
-    std::vector<int> a;
-    std::vector<int> b(2, 1);
-    std::vector<int> c(3);
-
-    std::cout << "a.size() = " << a.size() << std::endl;
-    std::cout << "b.size() = " << b.size() << std::endl;
-    std::cout << "c.size() = " << c.size() << std::endl;
-    std::cout << "---------" << std::endl;
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
-    std::cout << "b.capacity() = " << b.capacity() << std::endl;
-    std::cout << "c.capacity() = " << c.capacity() << std::endl;
-    std::cout << "---------" << std::endl;
-    std::cout << "a.max_size() = " << a.max_size() << std::endl;
-    std::cout << "b.max_size() = " << b.max_size() << std::endl;
-    std::cout << "c.max_size() = " << c.max_size() << std::endl;
-    int s = a.size();
-
-    std::cout << "---------" << std::endl;
-    for (auto iter = a.begin(); iter != a.end(); iter++)
-        std::cout << *iter << std::endl;
-
-    std::cout << "---------" << std::endl;
-    for (auto iter = b.begin(); iter != b.end(); iter++)
-        std::cout << *iter << std::endl;
-
-    std::cout << "---------" << std::endl;
-    for (auto iter = c.begin(); iter != c.end(); iter++)
-        std::cout << *iter << std::endl;
-
-    std::cout << "---------" << std::endl << "---------" << std::endl;
-    test<int> d;
-    d.f1();
-
-    std::cout << "---------" << std::endl;
-
-    test<std::string> e;
-    e.f1();
-
-    std::cout << "---------" << std::endl;
-
-    test<char> f;
-    f.f1();
-
-    std::cout << "---------" << std::endl;
-
-    test<float> g;
-    g.f1();
+    
+    /* Test max_size() */
+    std::cout << std::endl << "======= TEST 2 =======" << std::endl;
+    (vBase.max_size() == vCustom.max_size()) ? fOK("max_size()") : fKO("max_size()");
 
 
-    //ft::Vector<int> v;
-    //ft::Vector<int> v1(2);
-    //ft::Vector<int> v2(2, 2);
-    //ft::Vector<int> v3(v2);
-
-   // std::cout << "v1.size() = " << v1.size() << std::endl;
-    //std::cout << "v1.max_size() = " << v1.max_size() << std::endl;
-
-    //ft::Vector<char> v4;
-    std::vector<char> cc;
+    /* Test size(), capacity() and front() after adding one element */
+    vBase.push_back("test");
+    vCustom.push_back("test");
+    std::cout << std::endl << "======= TEST 3 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
 
-    //std::cout << "v4.size() = " << v4.size() << std::endl;
-    //std::cout << "v4.max_size() = " << v4.max_size() << std::endl;
-    //std::cout << "cc.max_size() = " << cc.max_size() << std::endl;
+    /* Test size(), capacity() and element comparison after superior resize() */
+    vBase.resize(10);
+    vCustom.resize(10);
+    std::cout << std::endl << "======= TEST 4 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
-    std::cout << "---------" << std::endl;
 
-    std::cout << "int() = " << int() << std::endl;
-    std::cout << "std::string() = " << std::string() << std::endl;
-    std::vector<double> cc2;
-    std::cout << "cc2.max_size() = " << cc2.max_size() << std::endl;
-    //ft::Vector<double> v5;
-    //std::cout << "v5.max_size() = " << v5.max_size() << std::endl;
+    /* Test size(), capacity() and front() after clear() */
+    vBase.clear();
+    vCustom.clear();
+    std::cout << std::endl << "======= TEST 5 =======" << std::endl;
+    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
+    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+    (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
 
-    std::cout << "---------" << std::endl;
 
-    std::vector<double> cc3;
-    //ft::Vector<char*> v6;
-
-    std::cout << "cc3.max_size() = " << cc3.max_size() << std::endl;
-    //std::cout << "v6.max_size() = " << v6.max_size() << std::endl;
-
-    std::cout << "---------" << std::endl;
-
-    std::cout << "a.size() = " << a.size() << std::endl;
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
-
+    /* Test size(), capacity() and element comparison after inferior resize() */
+    std::string str_array[10] = { "test0", "test1", "test2", "test3", "test4",
+                                "test5", "test6", "test7", "test8", "test9" };
     for (int count = 0; count < 10; count++)
     {
-        std::cout << "=========" << std::endl;
-        a.insert(a.end(), 1);
-        std::cout << "a.size() = " << a.size() << std::endl;
-        std::cout << "a.capacity() = " << a.capacity() << std::endl;
+        vBase.push_back(str_array[count]);
+        vCustom.push_back(str_array[count]);
     }
-
-    std::cout << ">>" << std::endl;
-    std::cout << "a.size() = " << a.size() << std::endl;
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
-    std::cout << ">>" << std::endl;
-    a.reserve(10);
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
-    std::cout << ">>" << std::endl;
-    a.insert(a.end(), 1);
-    std::cout << "a.size() = " << a.size() << std::endl;
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
-    std::cout << ">>" << std::endl;
-    a.insert(a.end(), 10, 1);
-    std::cout << "a.size() = " << a.size() << std::endl;
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
-    std::cout << ">>" << std::endl;
-    a.insert(a.end(), 9, 1);
-    std::cout << "a.size() = " << a.size() << std::endl;
-    std::cout << "a.capacity() = " << a.capacity() << std::endl;
+    vBase.resize(5);
+    vCustom.resize(5);
+    std::cout << std::endl << "======= TEST 6 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
 
-    std::cout << "===============================================================" << std::endl;
+    /* Test size(), capacity() and element comparison after equal resize() */
+    vBase.resize(5);
+    vCustom.resize(5);
+    std::cout << std::endl << "======= TEST 7 =======" << std::endl;
+    testBasics(vBase, vCustom);
 
-    std::vector<char> charr;
 
+    /* Test size() and capacity() after reserve() equal to zero */
+    vBase.reserve(0);
+    vCustom.reserve(0);
+    std::cout << std::endl << "======= TEST 8 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size() and capacity() after reserve() inferior than capacity() */
+    vBase.reserve(1);
+    vCustom.reserve(1);
+    std::cout << std::endl << "======= TEST 9 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size() and capacity() after reserve() inferior than 2xsize() */
+    vBase.reserve(8);
+    vCustom.reserve(8);
+    std::cout << std::endl << "======= TEST 10 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size() and capacity() after reserve() superior than 2xsize() */
+    vBase.reserve(25);
+    vCustom.reserve(25);
+    std::cout << std::endl << "======= TEST 11 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test empty() before clear() */
+    std::cout << std::endl << "======= TEST 12 =======" << std::endl;
+    (vBase.empty() == vCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test empty() after clear() */
+    vBase.clear();
+    vCustom.clear();
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (vBase.empty() == vCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test at() in bounds */
     for (int count = 0; count < 10; count++)
     {
-        std::cout << "=========" << std::endl;
-        charr.insert(charr.end(), 1);
-        std::cout << "charr.size() = " << charr.size() << std::endl;
-        std::cout << "charr.capacity() = " << charr.capacity() << std::endl;
+        vBase.push_back(str_array[count]);
+        vCustom.push_back(str_array[count]);
     }
-
-    std::cout << "===============================================================" << std::endl;
-
-    std::vector<char>::iterator iter1(charr.begin());
-
-    char *ptr = &charr[1];
-
-    //std::vector<char>::iterator iter2(ptr);
-
-    struct osef {
-        int a;
-        int b;
-    };
-
-    std::vector<osef> myvector;
-    osef ss;
-    ss.a = 4;
-    ss.b = 5;
-
-    osef ss2;
-    ss2.a = 77;
-    ss2.b = 88;
+    std::cout << std::endl << "======= TEST 14 =======" << std::endl;
+    (vBase.at(2) == vCustom.at(2)) ? fOK("at()") : fKO("at()");
 
 
-    myvector.push_back(ss);
-    myvector.push_back(ss2);
-    std::vector<osef>::iterator iter2 = myvector.begin();
-    std::cout << iter2->a << std::endl;
-    std::cout << iter2->b << std::endl;
-    iter2++;
-    std::cout << iter2->a << std::endl;
-    std::cout << iter2->b << std::endl;
-    std::cout << "======================" << std::endl;
-    iter2 = myvector.begin();
-
-    std::cout << iter2[0].a << std::endl;
-    std::cout << iter2[1].a << std::endl;
-
-    iter2++;
-    std::cout << iter2[0].a << std::endl;
-    iter2 -= 1;
-    std::cout << iter2[0].a << std::endl;
-    iter2 += 1;
-    std::cout << iter2[0].a << std::endl;
-
-    std::cout << "======================" << std::endl;
-    std::vector<int> rev;
-    rev.push_back(1);
-    rev.push_back(2);
-    rev.push_back(3);
-
-    std::vector<int>::iterator it = rev.begin();
-    std::vector<int>::reverse_iterator rit = rev.rbegin();
-    std::cout << "*it = " << *it << std::endl;
-    std::cout << "*rit = " << *rit << std::endl;
-    it += 1;
-    rit += 1;
-    std::cout << "*it = " << *it << std::endl;
-    std::cout << "*rit = " << *rit << std::endl;
-    std::vector<int>::iterator in = rev.end();
-    in--;
-    std::cout << "return isnert = " << *(rev.insert(in, 7)) << std::endl;
-    for (auto x : rev)
-        std::cout << x << std::endl;
-
-    rev.reserve(20);
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-    std::cout << "======================" << std::endl;
-    rev.clear();
-
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-
-    std::cout << "======================" << std::endl;
-    rev.push_back(1);
-    rev.push_back(2);
-    rev.push_back(3);
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-
-    std::cout << "======================" << std::endl;
-    rev.assign(6, 1);
-    for (auto x : rev)
-        std::cout << x << std::endl;
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-    rev.push_back(3);
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-
-    std::cout << "======================" << std::endl;
-
-    rev.push_back(33);
-    rev.push_back(44);
-    rev.push_back(55);
-    rev.push_back(66);
-    rev.push_back(77);
-    for (auto x : rev)
-        std::cout << x << std::endl;
-
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-    rev.assign(rev.begin(), rev.begin() + 2);
-
-    std::cout << "===========" << std::endl;
-    for (auto x : rev)
-        std::cout << x << std::endl;
-
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-
-    std::vector<int> rev2(30, 1);
-    rev2.push_back(8);
-    rev2.push_back(9);
-    rev2.push_back(10);
-
-    std::cout << "===========" << std::endl;
-    rev.assign(rev2.begin(), rev2.end());
-    for (auto x : rev)
-        std::cout << x << std::endl;
-
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-
-    rev.pop_back();
-
-
-    std::cout << "rev.size() = " << rev.size() << std::endl;
-    std::cout << "rev.capacity() = " << rev.capacity() << std::endl;
-    for (auto x : rev)
-        std::cout << x << std::endl;
-    std::cout << "===========" << std::endl;
-    rev.clear();
-    rev.push_back(1);
-    rev.push_back(2);
-    rev.push_back(3);
-    rev.push_back(4);
-    std::vector<int>::iterator it_test_rev = rev.begin();
-    for (auto x : rev)
-        std::cout << x << std::endl;
-    it_test_rev++;
-    std::vector<int>::reverse_iterator rit_test_rev(it_test_rev);
-   // std::vector<int>::iterator it_test_rev2(rit_test_rev);
-
-    std::cout << "*it_test_rev = " << *it_test_rev << std::endl;
-    std::cout << "*rit_test_rev = " << *rit_test_rev << std::endl;
-    //std::cout << "*it_test_rev2 = " << *it_test_rev2 << std::endl;
-
-    //std::vector<int>rev;
-    //try
-    //{
-    ///    std::cout << rev.max_size() << std::endl;
-    //    rev.reserve(4611686018427387904);
-    //}
-    //catch(const std::exception& e)
-    //{
-    //    std::cerr << e.what() << '\n';
-    //}
-
+    /* Test at() out of bounds */
+    std::cout << std::endl << "======= TEST 15 =======" << std::endl;
+    std::cout << "\033[38;5;43mstd::vector exception: \033[0m";
     try
     {
-        std::cout << rev.at(0) << std::endl;
+        vBase.at(100);
     }
-    catch ( std::exception &e)
+    catch(const std::exception& e)
     {
-        std::cerr <<"exception: >" << e.what() << '\n';
+        std::cerr << e.what() << '\n';
     }
-    
+    std::cout << "\033[38;5;43mft::vector exception: \033[0m";
+    try
+    {
+        vCustom.at(100);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+
+    /* Test front() and back() */
+    std::cout << std::endl << "======= TEST 16 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after assign() with another vector's iterators */
+    std::vector<std::string> vBase2(vBase);
+    vBase.assign(vBase2.begin(), (vBase2.end() - 5));
+    vCustom.assign(vBase2.begin(), (vBase2.end() - 5));
+    std::cout << std::endl << "======= TEST 17 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after assign() with same vector's iterators */
+    vBase.assign(vBase.begin() + 2, (vBase.end()));
+    vCustom.assign(vCustom.begin() + 2, (vCustom.end()));
+    std::cout << std::endl << "======= TEST 18 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after assign() 
+    with a number of value inferior to capacity() */
+    vBase.assign(1, "test");
+    vCustom.assign(1, "test");
+    std::cout << std::endl << "======= TEST 19 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after assign() 
+    with a number of value superior to capacity() */
+    vBase.assign(1000, "test");
+    vCustom.assign(1000, "test");
+    std::cout << std::endl << "======= TEST 20 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after pop_back() */
+    vBase.pop_back();
+    vCustom.pop_back();
+    std::cout << std::endl << "======= TEST 21 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() at begin() */
+    vBase.clear();
+    vCustom.clear();
+    vBase.insert(vBase.begin(), "test0");
+    vCustom.insert(vCustom.begin(), "test0");
+    vBase.insert(vBase.begin(), "test1");
+    vCustom.insert(vCustom.begin(), "test1");
+    std::cout << std::endl << "======= TEST 22 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() at end() */
+    vBase.insert(vBase.end(), "test2");
+    vCustom.insert(vCustom.end(), "test2");
+    vBase.insert(vBase.end(), "test3");
+    vCustom.insert(vCustom.end(), "test3");
+    std::cout << std::endl << "======= TEST 23 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() at begin() + 2 */
+    vBase.insert(vBase.begin() + 2, "test4");
+    vCustom.insert(vCustom.begin() + 2, "test4");
+    vBase.insert(vBase.begin() + 2, "test5");
+    vCustom.insert(vCustom.begin() + 2, "test5");
+    std::cout << std::endl << "======= TEST 24 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements at begin() */
+    vBase.clear();
+    vCustom.clear();
+    vBase.insert(vBase.begin(), 2, "test6");
+    vCustom.insert(vCustom.begin(), 2, "test6");
+    vBase.insert(vBase.begin(), 2, "test7");
+    vCustom.insert(vCustom.begin(), 2, "test7");
+    std::cout << std::endl << "======= TEST 25 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements at begin() */
+    vBase.insert(vBase.begin(), 0, "test8");
+    vCustom.insert(vCustom.begin(), 0, "test8");
+    std::cout << std::endl << "======= TEST 26 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements at end() */
+    vBase.insert(vBase.end(), 10, "test9");
+    vCustom.insert(vCustom.end(), 10, "test9");
+    vBase.insert(vBase.end(), 10, "test10");
+    vCustom.insert(vCustom.end(), 10, "test10");
+    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements at begin() + 8 */
+    vBase.insert(vBase.begin() + 8, 4, "test11");
+    vCustom.insert(vCustom.begin() + 8, 4, "test11");
+    vBase.insert(vBase.begin() + 8, 4, "test12");
+    vCustom.insert(vCustom.begin() + 8, 4, "test12");
+    std::cout << std::endl << "======= TEST 28 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements from another vector at begin() */
+    vBase.clear();
+    vCustom.clear();
+    vBase.insert(vBase.begin(), vBase2.begin(), vBase2.end());
+    vCustom.insert(vCustom.begin(), vBase2.begin(), vBase2.end());
+    std::cout << std::endl << "======= TEST 29 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements from another vector at begin() + 2 */
+    vBase.insert(vBase.begin() + 2, vBase2.begin(), vBase2.end());
+    vCustom.insert(vCustom.begin() + 2, vBase2.begin(), vBase2.end());
+    std::cout << std::endl << "======= TEST 30 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() n elements from same vector at begin() */
+    vBase.resize(5);
+    vCustom.resize(5);
+    vBase.insert(vBase.begin(), vBase.begin(), vBase.end());
+    vCustom.insert(vCustom.begin(), vCustom.begin(), vCustom.end());
+    std::cout << std::endl << "======= TEST 31 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after insert() 0 elements from same vector at begin() */
+    vBase.insert(vBase.begin(), vBase.begin(), vBase.begin());
+    vCustom.insert(vCustom.begin(), vCustom.begin(), vCustom.begin());
+    std::cout << std::endl << "======= TEST 32 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after erase() at begin() */
+    vBase.erase(vBase.begin());
+    vCustom.erase(vCustom.begin());
+    std::cout << std::endl << "======= TEST 33 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison after erase() at begin() + 2 */
+    vBase.erase(vBase.begin() + 2);
+    vCustom.erase(vCustom.begin() + 2);
+    std::cout << std::endl << "======= TEST 34 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after erase() from begin() to end() */
+    vBase.erase(vBase.begin(), vBase.end());
+    vCustom.erase(vCustom.begin(), vCustom.end());
+    std::cout << std::endl << "======= TEST 35 =======" << std::endl;
+    (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
+    (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
+
+
+    /* Test relational operators with empty vectors */
+    vBase.clear();
+    vCustom.clear();
+    std::vector<std::string> cmp_vBase(vBase);
+    ft::Vector<std::string> cmp_vCustom(vCustom);
+    std::cout << std::endl << "======= TEST 36 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+
+    /* Test relational operators with one element in vectors */
+    vBase.push_back("test0");
+    vCustom.push_back("test0");
+    std::cout << std::endl << "======= TEST 37 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+
+    /* Test relational operators with same element number and same values in vectors */
+    cmp_vBase.push_back("test0");
+    cmp_vCustom.push_back("test0");
+    std::cout << std::endl << "======= TEST 38 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+
+    /* Test relational operators with same element number but different values in vectors */
+    cmp_vBase.push_back("test0");
+    cmp_vCustom.push_back("test0");
+    vBase.push_back("test1");
+    vCustom.push_back("test1");
+    std::cout << std::endl << "======= TEST 39 =======" << std::endl;
+    testRelationalOperators(vBase, cmp_vBase, vCustom, cmp_vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after swap() of same size vectors */
+    vBase.swap(cmp_vBase);
+    vCustom.swap(cmp_vCustom);
+    std::cout << std::endl << "======= TEST 40 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after swap() of different size vectors (inferior size) */
+    cmp_vBase.push_back("test2");
+    cmp_vCustom.push_back("test2");
+    vBase.swap(cmp_vBase);
+    vCustom.swap(cmp_vCustom);
+    std::cout << std::endl << "======= TEST 41 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+
+    /* Test size(), capacity(), front(), back() and element comparison
+    after swap() of different size vectors (superior size) */
+    vBase.insert(vBase.end(), 3, "test3");
+    vCustom.insert(vCustom.end(), 3, "test3");
+    vBase.swap(cmp_vBase);
+    vCustom.swap(cmp_vCustom);
+    std::cout << std::endl << "======= TEST 42 =======" << std::endl;
+    testBasics(vBase, vCustom);
+
+    /* Test normal iterators */
+    vBase.clear();
+    vCustom.clear();
+    for (int count = 0; count < 10; count++)
+    {
+        vBase.push_back(str_array[count]);
+        vCustom.push_back(str_array[count]);
+    }
+    std::cout << std::endl << "======= TEST 45 =======" << std::endl;
+    testIterator(vBase, vCustom);
+
+
+   /* Test reverse iterators */
+
+    std::cout << std::endl << "======= TEST 46 =======" << std::endl;
+    testReverseIterator(vBase, vCustom);
+}
+
+int main()
+{
+    std::cout << "\033[38;5;202m******************************************************" << std::endl;
+    std::cout << "***************       TEST VECTOR       **************" << std::endl;
+    std::cout << "******************************************************\033[0m" << std::endl;
+
+    std::cout << std::endl;
+    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>      vector<char>      <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
+    testVector<char>();
+
+    std::cout << std::endl << std::endl;
+    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>       vector<int>      <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
+    testVector<int>();
+
+    std::cout << std::endl << std::endl;
+    std::cout << "\033[38;5;51m>>>>>>>>>>>>      vector<std::string>      <<<<<<<<<<<\033[0m" << std::endl << std::endl;
+    testVectorStr();
+
     return (0);
 }
-*/

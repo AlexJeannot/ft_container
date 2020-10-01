@@ -18,15 +18,28 @@ namespace ft
 
             /* Constructor, Copy assignement and Destructor */
             ReverseIterator(void) : Iter() {}
-            ReverseIterator(pointer elem) : Iter(elem) {}
+            //ReverseIterator(pointer elem) : Iter(elem) { std::cout << "POINTER CONSTRUCT" << std::endl; }
+
             ReverseIterator(const ReverseIterator &other) : Iter(other._iter) {}
-            //ReverseIterator(const Iter &other) : Iter(other._iter - 1) {}
+            ReverseIterator(const Iter &other) : Iter((other)) {
+                Iter::operator--();
+            }
             ReverseIterator &operator=(const ReverseIterator &other) {
                 if (this != &other)
                     this->_iter = other._iter;
                 return (*this);
             }
-            ~ReverseIterator(void) {}
+            virtual ~ReverseIterator(void) {}
+
+
+            /* Accessors operators */
+            reference operator[](int index) {
+                return (*(this->_iter - index));
+            }
+
+            const_reference operator[](int index) const {
+                return (*(this->_iter - index));
+            }
 
 
             /* Increment/Decrement operators */
@@ -61,7 +74,7 @@ namespace ft
 
             ReverseIterator operator+(int index) {
                 ReverseIterator copy(*this);
-                copy -= index;
+                copy._iter -= index;
                 return (copy);
             }
 
@@ -72,9 +85,28 @@ namespace ft
 
             ReverseIterator operator-(int index) {
                 ReverseIterator copy(*this);
-                copy += index;
+                copy._iter += index;
                 return (copy);
             }
+
+
+            /* Comparison operators */
+            bool operator<(const ReverseIterator &other) {
+                return (Iter::operator>(other));
+            }
+
+            bool operator<=(const ReverseIterator &other) {
+                return (Iter::operator>=(other));
+            }
+
+            bool operator>(const ReverseIterator &other) {
+                return (Iter::operator<(other));
+            }
+
+            bool operator>=(const ReverseIterator &other) {
+                return (Iter::operator<=(other));
+            }
+
     };
 }
 

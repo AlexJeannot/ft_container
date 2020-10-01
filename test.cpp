@@ -4,42 +4,31 @@
 int main()
 {
     std::vector<int>v;
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
+    std::vector<int>v2;
 
     std::cout << "-------" << std::endl;
-
-    v.insert(v.begin(), 12, 12);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
-
+    v.reserve(10);
+    v2.reserve(11);
+    std::cout << (v == v2) << std::endl;
+    v.reserve(11);
+    std::cout << (v == v2) << std::endl;
+    v.push_back(1);
+    std::cout << (v == v2) << std::endl;
     std::cout << "-------" << std::endl;
-    v.insert(v.begin(), 1, 12);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
-
+    std::cout << "v size sup " << (v < v2) << std::endl;
+    v2.push_back(1);
+    std::cout << "v size equal " << (v < v2) << std::endl;
+    v2.push_back(2);
+    std::cout << "v2 size sup " << (v < v2) << std::endl;
+    v.push_back(1);
+    std::cout << "v size equal v2 sup " << (v < v2) << std::endl;
+    std::cout << "================" << std::endl;
+    for (auto x : v)
+        std::cout << x << std::endl;
+    v.resize(5);
     std::cout << "-------" << std::endl;
-    v.insert(v.begin(), 15, 12);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
+    for (auto x : v)
+        std::cout << x << std::endl;
 
-    std::cout << "-------" << std::endl;
-    v.resize(10);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
 
-    std::cout << "-------" << std::endl;
-    v.resize(50);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
-
-    std::cout << "-------" << std::endl;
-    v.resize(150);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
-
-    std::cout << "-------" << std::endl;
-    v.resize(1500);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
 }

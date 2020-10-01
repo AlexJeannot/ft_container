@@ -89,7 +89,7 @@ namespace ft
 
             VectorIterator operator+(int index) {
                 VectorIterator<value_type> copy(*this);
-                copy += index;
+                copy._iter += index;
                 return (copy);
             }
 
@@ -100,7 +100,7 @@ namespace ft
 
             VectorIterator operator-(int index) {
                 VectorIterator<value_type> copy(*this);
-                copy -= index;
+                copy._iter -= index;
                 return (copy);
             }
 
