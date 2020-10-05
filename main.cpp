@@ -2,18 +2,7 @@
 #include <vector>
 
 #include "includes/sequence_containers/Vector.hpp"
-#define OK "\033[38;5;40mOK\033[0m"
-#define KO "\033[38;5;124mKO\033[0m"
-
-void fOK(std::string test)
-{
-    std::cout << OK << "\033[38;5;43m >> " << test << "\033[0m" << std::endl;
-}
-
-void fKO(std::string test)
-{
-    std::cout << KO << "\033[38;5;43m >> " << test << "\033[0m" << std::endl;
-}
+#include "test.cpp"
 
 template <typename T>
 void testBasics(std::vector<T> vBase, ft::Vector<T> vCustom)
@@ -66,14 +55,34 @@ void testIterator(std::vector<T> vBase, ft::Vector<T> vCustom)
     (verif == true) ? fOK("Operator++(int)") : fKO("Operator++(int)");
 
     verif = true;
+    itBase = vBase.end();
+    itCustom = vCustom.end();
+    while (itBase != vBase.begin())
+    {
+        if (*itBase-- != *itCustom--)
+            verif = false;
+    }
+    (verif == true) ? fOK("Operator--(int)") : fKO("Operator--(int)");
+
+    verif = true;
     itBase = vBase.begin();
     itCustom = vCustom.begin();
-    for (int count = 0; count < 2; count++)
+    while (itBase != vBase.end())
     {
         if (*++itBase != *++itCustom)
             verif = false;
     }
     (verif == true) ? fOK("Operator++()") : fKO("Operator++()");
+
+    verif = true;
+    itBase = vBase.end();
+    itCustom = vCustom.end();
+    while (itBase != vBase.begin())
+    {
+        if (*--itBase != *--itCustom)
+            verif = false;
+    }
+    (verif == true) ? fOK("Operator--()") : fKO("Operator--()");
 
     itBase = vBase.begin() + 4;
     itCustom = vCustom.begin() + 4;
@@ -158,9 +167,6 @@ void testReverseIterator(std::vector<T> vBase, ft::Vector<T> vCustom)
     ((vBase.rbegin() > vBase.rbegin() + 2) == (vCustom.rbegin() > vCustom.rbegin() + 2)) ? fOK("Operator>()") : fKO("Operator>()");
     ((vBase.rbegin() >= vBase.rbegin()) == (vCustom.rbegin() >= vCustom.rbegin())) ? fOK("Operator>=()") : fKO("Operator>=()");
 }
-
-
-
 
 
 template <typename T>
@@ -298,7 +304,8 @@ void testVector(void)
     testBasics(vBase, vCustom);
 
 
-    /* Test size(), capacity(), front(), back() and element comparison after assign() with another vector's iterators */
+    /* Test size(), capacity(), front(), back() and element comparison
+    after assign() with another vector's iterators */
     std::vector<T> vBase2(vBase);
     vBase.assign(vBase2.begin(), (vBase2.end() - 5));
     vCustom.assign(vBase2.begin(), (vBase2.end() - 5));
@@ -306,28 +313,30 @@ void testVector(void)
     testBasics(vBase, vCustom);
 
 
-    /* Test size(), capacity(), front(), back() and element comparison after assign() with same vector's iterators */
+    /* Test size(), capacity(), front(), back() and element comparison
+    after assign() with same vector's iterators */
     vBase.assign(vBase.begin() + 2, (vBase.end()));
     vCustom.assign(vCustom.begin() + 2, (vCustom.end()));
     std::cout << std::endl << "======= TEST 18 =======" << std::endl;
     testBasics(vBase, vCustom);
 
-    /* Test size(), capacity(), front(), back() and element comparison after assign() 
-    with a number of value inferior to capacity() */
+    /* Test size(), capacity(), front(), back() and element comparison
+    after assign() with a number of value inferior to capacity() */
     vBase.assign(1, 1);
     vCustom.assign(1, 1);
     std::cout << std::endl << "======= TEST 19 =======" << std::endl;
     testBasics(vBase, vCustom);
 
 
-    /* Test size(), capacity(), front(), back() and element comparison after assign() 
-    with a number of value superior to capacity() */
+    /* Test size(), capacity(), front(), back() and element comparison
+    after assign() with a number of value superior to capacity() */
     vBase.assign(1000, 1);
     vCustom.assign(1000, 1);
     std::cout << std::endl << "======= TEST 20 =======" << std::endl;
     testBasics(vBase, vCustom);
 
-    /* Test size(), capacity(), front(), back() and element comparison after pop_back() */
+    /* Test size(), capacity(), front(), back() and element comparison
+    after pop_back() */
     vBase.pop_back();
     vCustom.pop_back();
     std::cout << std::endl << "======= TEST 21 =======" << std::endl;

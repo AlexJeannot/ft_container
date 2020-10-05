@@ -44,24 +44,28 @@ namespace ft
 
             /* Increment/Decrement operators */
             ReverseIterator operator++() {
-                this->_iter--;
+                Iter::operator--();
+                //this->_iter--;
                 return (*this);
             }
 
             ReverseIterator operator++(int) {
                 ReverseIterator copy(*this);
-                this->_iter--;
+                Iter::operator--();
+                //this->_iter--;
                 return (copy);
             }
 
             ReverseIterator operator--() {
-                this->_iter++;
+                Iter::operator++();
+                //this->_iter++;
                 return (*this);
             }
 
             ReverseIterator operator--(int) {
                 ReverseIterator copy(*this);
-                this->_iter++;
+                Iter::operator++();
+                //this->_iter++;
                 return (copy);
             }
 

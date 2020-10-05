@@ -53,13 +53,13 @@ namespace ft
             {
                 for (iterator it(position + diff); it != this->end(); it++)
                 {
-                    _alloc.destroy(&(*position));
-                    _alloc.construct(&(*position), *(it));
+                    this->_alloc.destroy(&(*position));
+                    this->_alloc.construct(&(*position), *(it));
                     position++;
                 }
                 for (; diff > 0; diff--)
                 {
-                    _alloc.destroy(&(*position));
+                    this->_alloc.destroy(&(*position));
                     position++;
                 }
             }
@@ -71,8 +71,8 @@ namespace ft
                     size_type count(this->_size - 1);
                     for (; &(this->_container[count]) != &(*position) - 1; count--)
                     {
-                        _alloc.construct(&this->_container[count] + diff, this->_container[count]);
-                        _alloc.destroy(&(this->_container[count]));
+                        this->_alloc.construct(&this->_container[count] + diff, this->_container[count]);
+                        this->_alloc.destroy(&(this->_container[count]));
                         if (&(this->_container[count]) == &(*this->begin()))
                             break;
                     }
@@ -80,22 +80,22 @@ namespace ft
             }
 
         public:
-            /* Constructor, Copy assignement and Destructor */
+            /* Constructors, Copy assignement and Destructor */
             Vector(const allocator_type& alloc = allocator_type())
-            : _alloc(alloc), _container(nullptr), _size(0), _capacity(0) 
+            : _container(nullptr), _size(0), _capacity(0), _alloc(alloc)
             {
 
             }
 
-            Vector(value_type n, const_reference val = value_type(), const allocator_type& alloc = allocator_type())
-            : _alloc(allocator_type()), _container(nullptr), _size(0), _capacity(0)
+            Vector(size_type n, const_reference val = value_type(), const allocator_type& alloc = allocator_type())
+            : _container(nullptr), _size(0), _capacity(0), _alloc(alloc)
             {
                 if (n > 0)
                     this->assign(n, val);
             }
 
             Vector(const Vector &other)
-            : _alloc(other._alloc), _container(nullptr), _size(0), _capacity(0)
+            : _container(nullptr), _size(0), _capacity(0), _alloc(other._alloc)
             {
                 if (other._size > 0)
                     this->assign(other.begin(), other.end());
@@ -104,7 +104,7 @@ namespace ft
             ~Vector()
             {
                 this->clear();
-                _alloc.deallocate(this->_container, this->_capacity);
+                this->_alloc.deallocate(this->_container, this->_capacity);
             }
 
             Vector &operator=(const Vector &other)
@@ -187,7 +187,7 @@ namespace ft
                 else if (n > this->_size)
                 {
                     verify_available_size(n);
-                    for (size_type count = 0; count < (n - save_size); count++)
+                    for (; n > save_size; n--)
                         push_back(val);
                 }
             }
@@ -210,12 +210,12 @@ namespace ft
                     {
                         pointer tmp_ptr = _alloc.allocate(n);
                         for (size_type count = 0; count < this->_size; count++)
-                            _alloc.construct(&(tmp_ptr[count]), this->_container[count]);
-                        _alloc.deallocate(this->_container, this->_capacity);
-                        this->_container = _alloc.allocate(n);
+                            this->_alloc.construct(&(tmp_ptr[count]), this->_container[count]);
+                       this->_alloc.deallocate(this->_container, this->_capacity);
+                        this->_container = this->_alloc.allocate(n);
                         for (size_type count = 0; count < this->_size; count++)
-                            _alloc.construct(&(this->_container[count]), tmp_ptr[count]);
-                        _alloc.deallocate(tmp_ptr, n);
+                            this->_alloc.construct(&(this->_container[count]), tmp_ptr[count]);
+                        this->_alloc.deallocate(tmp_ptr, n);
                     }
                     else
                         this->_container =_alloc.allocate(n);
@@ -270,7 +270,7 @@ namespace ft
                 if (n > this->_capacity)
                     this->reserve(n);
                 for (size_type count = 0; count < n; count++)
-                    _alloc.construct(&(this->_container[count]), val);
+                    this->_alloc.construct(&(this->_container[count]), val);
                 this->_size = n;
             }
 
@@ -283,27 +283,26 @@ namespace ft
                 for (InputIterator copy(first); copy != last; copy++)
                     assign_size++;
 
-
-                pointer tmp_ptr = _alloc.allocate(assign_size);
+                pointer tmp_ptr = this->_alloc.allocate(assign_size);
                 for (size_type count = 0; count < assign_size; count++)
-                    _alloc.construct(&(tmp_ptr[count]), *first++);
+                    this->_alloc.construct(&(tmp_ptr[count]), *first++);
                 this->clear();
                 if (assign_size > this->_capacity)
                     this->reserve(assign_size);
                 for (size_type count = 0; count < assign_size; count++)
-                    _alloc.construct(&(this->_container[count]), tmp_ptr[count]);
+                    this->_alloc.construct(&(this->_container[count]), tmp_ptr[count]);
                 this->_size = assign_size;
             }
 
             void push_back(const_reference val)
             {
                 verify_available_size(1);
-                _alloc.construct(this->_container + this->_size, val);
+                this->_alloc.construct(this->_container + this->_size, val);
                 this->_size++;
             }
 
             void pop_back(void) {
-                _alloc.destroy(this->_container + (this->_size - 1));
+                this->_alloc.destroy(this->_container + (this->_size - 1));
                 this->_size--;
             }
 
@@ -312,7 +311,7 @@ namespace ft
                 verify_available_size(1);
                 if (position != this->end())
                     back_shift(position, 1);
-                _alloc.construct(&(*position), val);
+                this->_alloc.construct(&(*position), val);
                 this->_size++;
                 return (position);
             }
@@ -326,7 +325,7 @@ namespace ft
                         back_shift(position, n);
                     for (size_type count = 0; count < n; count++)
                     {
-                        _alloc.construct(&(*position), val);
+                        this->_alloc.construct(&(*position), val);
                         position++;
                     }
                     this->_size += n;
@@ -343,15 +342,15 @@ namespace ft
                     insert_size++;
                 if (insert_size > 0)
                 {
-                    pointer tmp_ptr = _alloc.allocate(insert_size);
+                    pointer tmp_ptr = this->_alloc.allocate(insert_size);
                     for (size_type count = 0; count < insert_size; count++)
-                        _alloc.construct(&(tmp_ptr[count]), *first++);
+                        this->_alloc.construct(&(tmp_ptr[count]), *first++);
                     verify_available_size(insert_size);
                     if (position != this->end())
                         back_shift(position, insert_size);
                     for (size_type count = 0; count < insert_size; count++)
                     {
-                        _alloc.construct(&(*position), tmp_ptr[count]);
+                        this->_alloc.construct(&(*position), tmp_ptr[count]);
                         position++;
                     }
                     this->_size += insert_size;
@@ -361,7 +360,7 @@ namespace ft
             iterator erase(iterator position)
             {
                 if (position == (this->end() - 1))
-                    _alloc.destroy(&(*position));
+                    this->_alloc.destroy(&(*position));
                 else
                     front_shift(position, 1);
                 this->_size--;
@@ -382,7 +381,7 @@ namespace ft
             void clear(void)
             {
                 for (iterator it(this->begin()); it != this->end(); it++)
-                    _alloc.destroy(&(*it));
+                    this->_alloc.destroy(&(*it));
                 this->_size = 0;
             }
 

@@ -23,7 +23,8 @@ namespace ft
             VectorIterator(void) : _iter(nullptr) {}
             VectorIterator(pointer elem) : _iter(elem) {}
             VectorIterator(const VectorIterator &other) : _iter(other._iter) {}
-            VectorIterator &operator=(const VectorIterator &other) {
+            VectorIterator &operator=(const VectorIterator &other)
+            {
                 if (this != &other)
                     this->_iter = other._iter;
                 return (*this);

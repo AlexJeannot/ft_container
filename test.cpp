@@ -1,34 +1,15 @@
 #include <iostream>
-#include <vector>
 
-int main()
+#define OK "\033[38;5;40mOK\033[0m"
+#define KO "\033[38;5;124mKO\033[0m"
+
+void fOK(std::string test)
 {
-    std::vector<int>v;
-    std::vector<int>v2;
-
-    std::cout << "-------" << std::endl;
-    v.reserve(10);
-    v2.reserve(11);
-    std::cout << (v == v2) << std::endl;
-    v.reserve(11);
-    std::cout << (v == v2) << std::endl;
-    v.push_back(1);
-    std::cout << (v == v2) << std::endl;
-    std::cout << "-------" << std::endl;
-    std::cout << "v size sup " << (v < v2) << std::endl;
-    v2.push_back(1);
-    std::cout << "v size equal " << (v < v2) << std::endl;
-    v2.push_back(2);
-    std::cout << "v2 size sup " << (v < v2) << std::endl;
-    v.push_back(1);
-    std::cout << "v size equal v2 sup " << (v < v2) << std::endl;
-    std::cout << "================" << std::endl;
-    for (auto x : v)
-        std::cout << x << std::endl;
-    v.resize(5);
-    std::cout << "-------" << std::endl;
-    for (auto x : v)
-        std::cout << x << std::endl;
-
-
+    std::cout << OK << "\033[38;5;43m >> " << test << "\033[0m" << std::endl;
 }
+
+void fKO(std::string test)
+{
+    std::cout << KO << "\033[38;5;43m >> " << test << "\033[0m" << std::endl;
+}
+
