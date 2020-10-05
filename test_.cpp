@@ -138,5 +138,9 @@ int main()
     std::cout << *end_test2-- << std::endl;
     std::cout << *end_test2 << std::endl;
 
+    ft::List<int>yo;
+    yo.push_back(1);
+    yo.push_back(12);
+    system("leaks a.out");
 
 }

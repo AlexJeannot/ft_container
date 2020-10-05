@@ -5,7 +5,6 @@
 template <typename T>
 void testBasics(const std::list<T>& lBase, const ft::List<T>& lCustom)
 {
-    //std::cout << "lBase.size() = " << lBase.size() << std::endl;
     (lBase.size() == lCustom.size()) ? fOK("size()") : fKO("size()");
     (lBase.front() == lCustom.front()) ? fOK("front()") : fKO("front()");
     (lBase.back() == lCustom.back()) ? fOK("back()") : fKO("back()");
@@ -108,10 +107,10 @@ void testReverseIterator(std::list<T> lBase, ft::List<T> lCustom)
     itBase = lBase.rbegin();
     itCustom = lCustom.rbegin();
 
-    (*(lBase.rbegin()) == *(lCustom.rbegin())) ? fOK("begin()") : fKO("begin()");
-    (*(lBase.crbegin()) == *(lCustom.crbegin())) ? fOK("cbegin()") : fKO("cbegin()");
-    (*(--lBase.rend()) == *(--lCustom.rend())) ? fOK("end()") : fKO("end()");
-    (*(--lBase.crend()) == *(--lCustom.crend())) ? fOK("cend()") : fKO("cend()");
+    (*(lBase.rbegin()) == *(lCustom.rbegin())) ? fOK("rbegin()") : fKO("rbegin()");
+    (*(lBase.crbegin()) == *(lCustom.crbegin())) ? fOK("crbegin()") : fKO("crbegin()");
+    (*(--lBase.rend()) == *(--lCustom.rend())) ? fOK("rend()") : fKO("rend()");
+    (*(--lBase.crend()) == *(--lCustom.crend())) ? fOK("crend()") : fKO("crend()");
 
     while (itBase != lBase.rend())
     {
@@ -213,7 +212,6 @@ void testList(void)
     testBasics(lBase, lCustom);
 
 
-    std::cout << "AVANT TEST 4\n";
     /* Test size(), front(), back() and element comparison after superior resize() */
     lBase.resize(10);
     lCustom.resize(10);
@@ -779,8 +777,8 @@ void testList(void)
     lCustom.clear();
     for (int count = 0; count < 10; count++)
     {
-        lBase.push_back(count);
-        lCustom.push_back(count);
+        lBase.push_back(count + 1);
+        lCustom.push_back(count + 1);
     }
     std::cout << std::endl << "======= TEST 59 =======" << std::endl;
     testIterator(lBase, lCustom);
@@ -789,6 +787,7 @@ void testList(void)
     /* Test reverse iterators */
     std::cout << std::endl << "======= TEST 60 =======" << std::endl;
     testReverseIterator(lBase, lCustom);
+
 }
 
 
@@ -807,5 +806,6 @@ int main()
     std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>        list<int>       <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
     testList<int>();
 
+    system("leaks a.out");
     return (0);
 }

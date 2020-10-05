@@ -47,7 +47,7 @@ namespace ft
 
             ~ListElem()
             {
-
+                //this->_alloc.deallocate(&(this->_value), 1);
             }
 
 
@@ -64,7 +64,7 @@ namespace ft
             }
 
 
-            /* Other member functions */
+            /* Add and remove elem member functions */
             ListElem* add_before(ListElem* new_elem)
             {
                 if (this->_prev_elem)
@@ -75,29 +75,17 @@ namespace ft
                 return (new_elem);
             }
 
-            ListElem* add_after(ListElem* new_elem)
-            {
-                if (this->_next_elem)
-                    this->_next_elem->_prev_elem = new_elem;
-                new_elem->_prev_elem = this;
-                new_elem->_next_elem = this->_prev_elem;
-                this->_next_elem = new_elem;
-                return (new_elem);
-            }
-
             ListElem* delete_elem(bool front = false)
             {
-                ListElem* return_elem(nullptr);
-                (front) ? return_elem = this->_next_elem : return_elem = this->_prev_elem;
+                ListElem* return_elem((front) ? this->_next_elem : this->_prev_elem);
                 if (this->_prev_elem)
-                {
-                   // std::cout << "PASSE PREV DELETE\n";
                     this->_prev_elem->_next_elem = this->_next_elem;
-                }
                 this->_next_elem->_prev_elem = this->_prev_elem;
                 return (return_elem);
             }
 
+
+            /* get elem informations member functions */
             ListElem* get_next_elem(void) {
                 return (this->_next_elem);
             }
@@ -114,6 +102,16 @@ namespace ft
                 return (this->_prev_elem);
             }
 
+            reference get_value(void) {
+                return (this->_value);
+            }
+
+            const_reference get_value(void) const {
+                return (this->_value);
+            }
+
+
+            /* set elem informations member functions */
             void set_prev_elem(ListElem* elem) {
                 this->_prev_elem = elem;
             }
@@ -121,26 +119,6 @@ namespace ft
             void set_next_elem(ListElem* elem) {
                 this->_next_elem = elem;
             }
-
-            bool is_equal(const_reference val) {
-                return (this->_value == val);
-            }
-
-            reference get_value(void) {
-                return (this->_value);
-            }
-
-            const_reference get_value(void) const {
-                return (this->_value);
-            } 
-
-            reference operator*(void) {
-                return (this->_value);
-            }
-
-            const_reference operator*(void) const {
-                return (this->_value);
-            } 
 
 
 

@@ -44,19 +44,21 @@ namespace ft
 
 
             /* private member functions */
-            void setup_end(void)
+            void setup_border(void)
             {
                 this->_end = this->_alloc.allocate(1);
                 this->_alloc.construct(this->_end, value_type());
                 this->_begin = this->_alloc.allocate(1);
                 this->_alloc.construct(this->_begin, value_type());
-                this->_end->add_before(this->_end);
+                this->_end->set_prev_elem(this->_begin);
+                this->_begin->set_next_elem(this->_end);
                 this->_first = this->_end;
             }
 
-            void reset_list(void)
+            void reset_border(void)
             {
                 this->_size = 0;
+                this->_end->set_prev_elem(this->_begin);
                 this->_begin->set_next_elem(this->_end);
                 this->_first = this->_end;
             }
@@ -75,13 +77,13 @@ namespace ft
             List(const allocator_type& alloc = allocator_type())
             : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(alloc)
             {
-                setup_end();
+                setup_border();
             }
 
             List(size_type n, const_reference val = value_type(), const allocator_type& alloc = allocator_type())
             : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(alloc)
             {
-                setup_end();
+                setup_border();
                 if (n > 0)
                     this->assign(n, val);
             }
@@ -89,7 +91,7 @@ namespace ft
             List(const List &other)
             : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(other._alloc)
             {
-                setup_end();
+                setup_border();
                 if (other._size > 0)
                     this->assign(other.begin(), other.end());
             }
@@ -237,7 +239,7 @@ namespace ft
                     this->_size--;
                 }
                 if (this->_size == 0)
-                    this->reset_list();
+                    this->reset_border();
             }
 
             void push_back(const_reference val)
@@ -262,7 +264,7 @@ namespace ft
                     this->_size--;
                 }
                 if (this->_size == 0)
-                    this->reset_list();
+                    this->reset_border();
             }
 
             iterator insert(iterator position, const_reference val)
@@ -274,8 +276,8 @@ namespace ft
                 if (position.get_elem() == this->_first)
                     this->_first = new_elem;
                 this->_size++;
-                return (position);
-            } // A VOIR RETURN
+                return (iterator(new_elem));
+            }
 
             void insert(iterator position, size_type n, const_reference val)
             {
@@ -368,13 +370,18 @@ namespace ft
                     iterator first(this->begin());
                     iterator next(first);
                     iterator last(this->end());
-                    for (next++; next != last; next++)
+                    for (next++; first != last; next++)
                     {
+                        //std::cout << "*first = " << *first << std::endl;
+                        //std::cout << "*next = " << *next << std::endl;
                         this->_alloc.destroy(first.get_elem());
                         this->_alloc.deallocate(first.get_elem(), 1);
                         first = next;
                     }
-                    this->reset_list();
+                    //std::cout << "this->_end->get_prev_elem()->get_value() = " << this->_end->get_prev_elem()->get_value() << std::endl;
+                    //this->_alloc.destroy(this->_end->get_prev_elem());
+                    //this->_alloc.deallocate(this->_end->get_prev_elem(), 1);
+                    this->reset_border();
                 }
             }
 
@@ -395,7 +402,7 @@ namespace ft
                     first = next;
                     this->_size++;
                 }
-                x.reset_list();
+                x.reset_border();
             }
 
             void splice(iterator position, List& x, iterator i)
@@ -410,7 +417,7 @@ namespace ft
                     this->_size++;
                     x._size--;
                     if (x._size == 0)
-                        x.reset_list();
+                        x.reset_border();
                 }
             }
 
@@ -504,7 +511,7 @@ namespace ft
                         merge_first = merge_next;
                         this->_size++;
                     }
-                    x.reset_list();
+                    x.reset_border();
                 }
             }
 

@@ -29,9 +29,7 @@ namespace ft
                 /* Constructor, Copy assignement and Destructor */
                 ListIterator(void) : _iter(nullptr) {}
 
-                ListIterator(list_elem_pointer elem) : _iter(elem) {
-
-                }
+                ListIterator(list_elem_pointer elem) : _iter(elem) {}
 
                 ListIterator(const ListIterator &other) : _iter(other._iter) {}
 
@@ -41,14 +39,9 @@ namespace ft
                         this->_iter = other._iter;
                     return (*this);
                 }
-/*
-                ListIterator &operator=(list_elem_pointer adress)
-                {
-                    this->_iter = adress;
-                    return (*this);
-                }
-*/
+
                 virtual ~ListIterator(void) {}
+
 
                 /* Accessors operators */
                 reference operator*(void) {
