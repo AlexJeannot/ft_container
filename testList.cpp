@@ -5,6 +5,7 @@
 template <typename T>
 void testBasics(const std::list<T>& lBase, const ft::List<T>& lCustom)
 {
+    //std::cout << "lBase.size() = " << lBase.size() << std::endl;
     (lBase.size() == lCustom.size()) ? fOK("size()") : fKO("size()");
     (lBase.front() == lCustom.front()) ? fOK("front()") : fKO("front()");
     (lBase.back() == lCustom.back()) ? fOK("back()") : fKO("back()");
@@ -96,6 +97,7 @@ void testIterator(std::list<T> lBase, ft::List<T> lCustom)
     ((lBase.begin() == lBase.begin()) == (lCustom.begin() == lCustom.begin())) ? fOK("Operator==()") : fKO("Operator==()");
     ((lBase.begin() != lBase.begin()) == (lCustom.begin() != lCustom.begin())) ? fOK("Operator!=()") : fKO("Operator!=()"); 
 }
+
 
 template <typename T>
 void testReverseIterator(std::list<T> lBase, ft::List<T> lCustom)
@@ -505,7 +507,6 @@ void testList(void)
     testBasics(lBase, lCustom);
     std::cout << "----- spliced list -----" << std::endl;
     testBasics(spliceBase, spliceCustom);
-    std::cout << std::endl << "======= FIN TEST 36 =======" << std::endl;
 
 
     /* Test size(), capacity(), front(), back() and element comparison
@@ -794,14 +795,17 @@ void testList(void)
 
 int main()
 {
+    std::cout << "\033[38;5;202m******************************************************" << std::endl;
+    std::cout << "***************        TEST LIST        **************" << std::endl;
+    std::cout << "******************************************************\033[0m" << std::endl;
+
+    std::cout << std::endl;
+    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>       list<char>       <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
+    testList<char>();
+
+    std::cout << std::endl << std::endl;
+    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>        list<int>       <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
     testList<int>();
-
-    ft::List<int> test;
-    test.push_back(10);
-    ft::List<int>::iterator it = test.begin();
-    std::cout << *it << std::endl;
-
-    ft::List<int>::iterator copy(test.begin());
 
     return (0);
 }

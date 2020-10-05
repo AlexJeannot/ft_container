@@ -36,8 +36,8 @@ namespace ft
 
         private:
             /* private member variables */
-            value_type _default;
             list_elem_pointer _first;
+            list_elem_pointer _begin;
             list_elem_pointer _end;
             size_type _size;
             allocator_type _alloc;
@@ -48,13 +48,16 @@ namespace ft
             {
                 this->_end = this->_alloc.allocate(1);
                 this->_alloc.construct(this->_end, value_type());
+                this->_begin = this->_alloc.allocate(1);
+                this->_alloc.construct(this->_begin, value_type());
+                this->_end->add_before(this->_end);
                 this->_first = this->_end;
             }
 
             void reset_list(void)
             {
                 this->_size = 0;
-                this->_end->set_prev_elem(nullptr);
+                this->_begin->set_next_elem(this->_end);
                 this->_first = this->_end;
             }
 
@@ -70,13 +73,13 @@ namespace ft
         public:
             /* Constructors, Copy assignement and Destructor */
             List(const allocator_type& alloc = allocator_type())
-            : _default(value_type()), _first(nullptr), _end(nullptr), _size(0), _alloc(alloc)
+            : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(alloc)
             {
                 setup_end();
             }
 
             List(size_type n, const_reference val = value_type(), const allocator_type& alloc = allocator_type())
-            : _default(value_type()), _first(nullptr), _end(nullptr), _size(0), _alloc(alloc)
+            : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(alloc)
             {
                 setup_end();
                 if (n > 0)
@@ -84,7 +87,7 @@ namespace ft
             }
 
             List(const List &other)
-            : _default(other._default), _first(nullptr), _end(nullptr), _size(0), _alloc(other._alloc)
+            : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(other._alloc)
             {
                 setup_end();
                 if (other._size > 0)
@@ -96,6 +99,8 @@ namespace ft
                 this->clear();
                 this->_alloc.destroy(this->_end);
                 this->_alloc.deallocate(this->_end, 1);
+                this->_alloc.destroy(this->_begin);
+                this->_alloc.deallocate(this->_begin, 1);
             }
 
             List &operator=(const List &other)
@@ -281,28 +286,6 @@ namespace ft
                 }
             }
 
-/*
-            template < typename InputIterator >
-            void insert(iterator position, InputIterator first, InputIterator last,
-            typename std::enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type* = nullptr)
-            {
-                size_type insert_size(0);
-
-                for (InputIterator copy = first; copy != last; copy++)
-                    insert_size++;
-
-                if (insert_size > 0)
-                {
-                    for (size_type count = 0; count < insert_size; count++)
-                    {
-                        this->insert(position, *first);
-                        if (position != this->end())
-                            position++;
-                        first++;
-                    }
-                }
-            }
-*/
             template < typename InputIterator >
             void insert(iterator position, InputIterator first, InputIterator last,
             typename std::enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type* = nullptr)
@@ -310,35 +293,16 @@ namespace ft
                 List<value_type> tmp;
                 iterator pos(tmp.begin());
                 for (; first != last; first++)
-                {
-                  //  std::cout << "BOUCLE INSERT 1 --------\n";
-                  //  std::cout << "*first = " << *first << std::endl;
                     tmp.insert(pos, *first);
-                    //std::cout << "tmp.back() = " << tmp.back() << std::endl;
-                   // std::cout << "tmp.size() = " << tmp.size() << std::endl;
-                    //std::cout << "--------\n";
-                }
-                    //->insert(tmp.begin(), *first);
-
-              //  std::cout << "####################\n";
-             //   for (iterator lala = tmp.begin(); lala != tmp.end(); lala++)
-             //       std::cout << *lala << std::endl;
-             //   std::cout << "####################\n";
-
-
-                iterator test_first = tmp.begin();
-                iterator test_last = tmp.end();
+                iterator test_first(tmp.begin());
+                iterator test_last(tmp.end());
                 for (; test_first != test_last; test_first++)
-                {
-                  //  std::cout << "BOUCLE\n";
                     this->insert(position, *test_first);
-                }
-                  //  this->insert(position, *first);
             }
 
             iterator erase(iterator position)
             {
-                iterator return_iterator = position;
+                iterator return_iterator(position);
                 
                 return_iterator++;
                 if (position.get_elem() == this->_first)
@@ -401,11 +365,9 @@ namespace ft
             {
                 if (this->_size > 0)
                 {
-                  //  std::cout << "PASSE CLEAR\n";
                     iterator first(this->begin());
                     iterator next(first);
                     iterator last(this->end());
-
                     for (next++; next != last; next++)
                     {
                         this->_alloc.destroy(first.get_elem());
@@ -425,6 +387,7 @@ namespace ft
                 iterator last(x.end());
                 for (next++; first != last; next++)
                 {
+                    first.get_elem()->delete_elem();
                     if (position.get_elem() == this->_first)
                         this->_first = position.get_elem()->add_before(first.get_elem());
                     else
@@ -600,9 +563,9 @@ namespace ft
     bool operator==(const List<T,Alloc>& lhs, const List<T,Alloc>& rhs) {
         if (lhs.size() != rhs.size())
             return (false);
-        typename List<T>::const_iterator lhs_it = lhs.begin();
-        typename List<T>::const_iterator rhs_it = rhs.begin();
-        typename List<T>::const_iterator end = lhs.end();
+        typename List<T>::const_iterator lhs_it(lhs.begin());
+        typename List<T>::const_iterator rhs_it(rhs.begin());
+        typename List<T>::const_iterator end(lhs.end());
         while (lhs_it != end)
         {
             if (*lhs_it != *rhs_it)
@@ -623,9 +586,9 @@ namespace ft
         if (lhs.size() != rhs.size())
             return (lhs.size() < rhs.size());
 
-        typename List<T>::const_iterator lhs_it = lhs.begin();
-        typename List<T>::const_iterator rhs_it = rhs.begin();
-        typename List<T>::const_iterator end = lhs.end();
+        typename List<T>::const_iterator lhs_it(lhs.begin());
+        typename List<T>::const_iterator rhs_it(rhs.begin());
+        typename List<T>::const_iterator end(lhs.end());
         while (lhs_it != end)
         {
             if (*lhs_it != *rhs_it)

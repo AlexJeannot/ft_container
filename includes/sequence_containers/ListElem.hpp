@@ -75,6 +75,16 @@ namespace ft
                 return (new_elem);
             }
 
+            ListElem* add_after(ListElem* new_elem)
+            {
+                if (this->_next_elem)
+                    this->_next_elem->_prev_elem = new_elem;
+                new_elem->_prev_elem = this;
+                new_elem->_next_elem = this->_prev_elem;
+                this->_next_elem = new_elem;
+                return (new_elem);
+            }
+
             ListElem* delete_elem(bool front = false)
             {
                 ListElem* return_elem(nullptr);
@@ -106,6 +116,10 @@ namespace ft
 
             void set_prev_elem(ListElem* elem) {
                 this->_prev_elem = elem;
+            }
+
+            void set_next_elem(ListElem* elem) {
+                this->_next_elem = elem;
             }
 
             bool is_equal(const_reference val) {
