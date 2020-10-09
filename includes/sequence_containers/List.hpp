@@ -27,7 +27,6 @@ namespace ft
             typedef list_elem& list_elem_reference;
             typedef const list_elem& const_list_elem_reference;
             typedef size_t size_type;
-            typedef std::ptrdiff_t difference_type;
             typedef Alloc allocator_type;
             typedef ListIterator<list_elem, value_type> iterator;
             typedef ListIterator<const list_elem, const value_type> const_iterator;
@@ -170,8 +169,9 @@ namespace ft
 
             size_type max_size(void) const
             {
-                return (std::min((size_type) std::numeric_limits<difference_type>::max(),
-                        std::numeric_limits<size_type>::max() / sizeof(list_elem)));
+                return (std::numeric_limits<size_type>::max() / sizeof(list_elem));
+                //return (std::min((size_type) std::numeric_limits<difference_type>::max(),
+                //        std::numeric_limits<size_type>::max() / sizeof(list_elem)));
             }
 
             bool empty() const {

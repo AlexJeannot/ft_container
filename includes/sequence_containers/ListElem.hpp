@@ -44,12 +44,7 @@ namespace ft
 
             }
 
-
-            ~ListElem()
-            {
-                //this->_alloc.deallocate(&(this->_value), 1);
-            }
-
+            ~ListElem(){}
 
             ListElem &operator=(const ListElem &other)
             {
