@@ -2,301 +2,440 @@
 #include <map>
 
 #include "includes/associative_containers/Map.hpp" 
-#include "includes/associative_containers/Tree.hpp"
 #include "includes/iterators/MapIterator.hpp"
 #include "test.cpp"
 
+template <typename Key, typename V>
+void testBasics(const std::map<Key, V>& mBase, const ft::Map<Key, V>& mCustom)
+{
+    (mBase.size() == mCustom.size()) ? fOK("size()") : fKO("size()");
+    typename std::map<Key, V>::const_iterator itBase = mBase. begin();
+    typename ft::Map<Key, V>::const_iterator itCustom = mCustom.cbegin();
+    if (mCustom.size() > 0)
+    {
+        while (itBase != mBase.end() && itCustom != mCustom.end())
+        {
+            if (itBase->first != itCustom->first
+            || itBase->second != itCustom->second)
+            {
+                fKO("map's elements comparison");
+                break;
+            }
+            itBase++;
+            itCustom++;
+        }
+        if (itBase != mBase.end() || itCustom != mCustom.end())
+            fKO("map's elements number");
+        else
+            fOK("map's elements number");
+    }
+}
+
+template <typename Key, typename V>
+void testRelationalOperators(const std::map<Key, V>& mBase, const std::map<Key, V>& cmp_mBase,
+                            const ft::Map<Key, V>& mCustom, const ft::Map<Key, V>& cmp_mCustom)
+{
+    ((mBase == cmp_mBase) == (mCustom == cmp_mCustom)) ? fOK("==") : fKO("==");
+    ((mBase != cmp_mBase) == (mCustom != cmp_mCustom)) ? fOK("!=") : fKO("!=");
+    ((mBase < cmp_mBase) == (mCustom < cmp_mCustom)) ? fOK("<") : fKO("<");
+    ((mBase <= cmp_mBase) == (mCustom <= cmp_mCustom)) ? fOK("<=") : fKO("<=");
+    ((mBase > cmp_mBase) == (mCustom > cmp_mCustom)) ? fOK(">") : fKO(">");
+    ((mBase >= cmp_mBase) == (mCustom >= cmp_mCustom)) ? fOK(">=") : fKO(">=");
+}
+
+template <typename Key, typename V>
+void testIterator(std::map<Key, V> mBase, ft::Map<Key, V> mCustom)
+{
+    bool verif = true;
+    typename std::map<Key, V>::iterator itBase;
+    typename ft::Map<Key, V>::iterator itCustom;
+    itBase = mBase.begin();
+    itCustom = mCustom.begin();
+
+    (mBase.begin()->first == mCustom.begin()->first) ? fOK("begin()") : fKO("begin()");
+    ((mBase.cbegin())->first == (mCustom.cbegin())->first) ? fOK("cbegin()") : fKO("cbegin()");
+    ((--mBase.end())->first == (--mCustom.end())->first) ? fOK("end()") : fKO("end()");
+    ((--mBase.cend())->first == (--mCustom.cend())->first) ? fOK("cend()") : fKO("cend()");
+
+    while (itBase != mBase.end())
+    {
+        if ((itBase++)->first != (itCustom++)->first)
+        {
+            if (itBase != mBase.end())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator++(int)") : fKO("Operator++(int)");
+
+    verif = true;
+    itBase = --mBase.end();
+    itCustom = --mCustom.end();
+    while (itBase != mBase.begin())
+    {
+        if ((itBase--)->first != (itCustom--)->first)
+        {
+            if (itBase != mBase.begin())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator--(int)") : fKO("Operator--(int)");
+
+    verif = true;
+    itBase = mBase.begin();
+    itCustom = mCustom.begin();
+    while (itBase != mBase.end())
+    {
+        if ((++itBase)->first != (++itCustom)->first)
+        {
+            if (itBase != mBase.end())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator++()") : fKO("Operator++()");
+
+    verif = true;
+    itBase = mBase.end();
+    itCustom = mCustom.end();
+    while (itBase != mBase.begin())
+    {
+        if ((--itBase)->first != (--itCustom)->first)
+        {
+            if (itBase != mBase.begin())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator--()") : fKO("Operator--()");
+
+    ((mBase.begin() == mBase.begin()) == (mCustom.begin() == mCustom.begin())) ? fOK("Operator==()") : fKO("Operator==()");
+    ((mBase.begin() != mBase.begin()) == (mCustom.begin() != mCustom.begin())) ? fOK("Operator!=()") : fKO("Operator!=()"); 
+}
+
+
+template <typename Key, typename V>
+void testReverseIterator(std::map<Key, V> mBase, ft::Map<Key, V> mCustom)
+{
+    bool verif = true;
+    typename std::map<Key, V>::reverse_iterator itBase;
+    typename ft::Map<Key, V>::reverse_iterator itCustom;
+    itBase = mBase.rbegin();
+    itCustom = mCustom.rbegin();
+
+    (mBase.rbegin()->first == mCustom.rbegin()->first) ? fOK("rbegin()") : fKO("rbegin()");
+    ((mBase.crbegin())->first == (mCustom.crbegin())->first) ? fOK("crbegin()") : fKO("crbegin()");
+    ((--mBase.rend())->first == (--mCustom.rend())->first) ? fOK("rend()") : fKO("rend()");
+    ((--mBase.crend())->first == (--mCustom.crend())->first) ? fOK("crend()") : fKO("crend()");
+
+    while (itBase != mBase.rend())
+    {
+        if ((itBase++)->first != (itCustom++)->first)
+        {
+            if (itBase != mBase.rend())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator++(int)") : fKO("Operator++(int)");
+
+    verif = true;
+    itBase = --mBase.rend();
+    itCustom = --mCustom.rend();
+    while (itBase != mBase.rbegin())
+    {
+        if ((itBase--)->first != (itCustom--)->first)
+        {
+            if (itBase != mBase.rbegin())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator--(int)") : fKO("Operator--(int)");
+
+    verif = true;
+    itBase = mBase.rbegin();
+    itCustom = mCustom.rbegin();
+    while (itBase != --mBase.rend())
+    {
+        if ((++itBase)->first != (++itCustom)->first)
+        {
+            if (itBase != mBase.rend())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator++()") : fKO("Operator++()");
+
+    verif = true;
+    itBase = mBase.rend();
+    itCustom = mCustom.rend();
+    while (itBase != mBase.rbegin())
+    {
+        if ((--itBase)->first != (--itCustom)->first)
+        {
+            if (itBase != mBase.rbegin())
+                verif = false;
+        }
+    }
+    (verif == true) ? fOK("Operator--()") : fKO("Operator--()");
+
+    ((mBase.begin() == mBase.begin()) == (mCustom.begin() == mCustom.begin())) ? fOK("Operator==()") : fKO("Operator==()");
+    ((mBase.begin() != mBase.begin()) == (mCustom.begin() != mCustom.begin())) ? fOK("Operator!=()") : fKO("Operator!=()"); 
+}
+
+
+template <typename Key, typename V>
+void testMap(void)
+{
+    std::map<Key, V> mBase;
+    ft::Map<Key, V> mCustom;
+
+
+    /* Test size() and element comparison at initialization */
+    std::cout << "======= TEST 1 =======" << std::endl;
+    testBasics(mBase, mCustom);
+
+
+    /* Test max_size() */
+    std::cout << std::endl << "======= TEST 2 =======" << std::endl;
+    (mBase.max_size() == mCustom.max_size()) ? fOK("max_size()") : fKO("max_size()");
+
+
+    /* Test size() and element comparison after insert one elem */
+    std::pair<typename std::map<Key, V>::iterator, bool> basePair;
+    ft::pair<typename ft::Map<Key, V>::iterator, bool> customPair;
+    basePair = mBase.insert(std::make_pair<Key, V>(1, 20));
+    customPair = mCustom.insert(ft::make_pair<Key, V>(1, 20));
+    std::cout << std::endl << "======= TEST 3 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (basePair.first->first == customPair.first->first) ? fOK("key pair returned") : fKO("key pair returned");
+    (basePair.second == customPair.second) ? fOK("bool returned") : fKO("bool returned");
+
+
+    /* Test size() and element comparison after insert one existing elem */
+    basePair = mBase.insert(std::make_pair<Key, V>(1, 20));
+    customPair = mCustom.insert(ft::make_pair<Key, V>(1, 20));
+    std::cout << std::endl << "======= TEST 4 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (basePair.first->first == customPair.first->first) ? fOK("key pair returned") : fKO("key pair returned");
+    (basePair.second == customPair.second) ? fOK("bool returned") : fKO("bool returned");
+
+
+    /* Test size() and element comparison after insert one elem with position */
+    typename std::map<Key, V>::iterator itBase;
+    typename ft::Map<Key, V>::iterator itCustom;
+    itBase = mBase.insert(mBase.begin(), std::make_pair<Key, V>(2, 20));
+    itCustom = mCustom.insert(mCustom.begin(), ft::make_pair<Key, V>(2, 20));
+    std::cout << std::endl << "======= TEST 5 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (itBase->first == itCustom->first) ? fOK("key pair returned") : fKO("key pair returned");
+
+
+    /* Test size() and element comparison after insert one existing elem with position */
+    itBase = mBase.insert(mBase.begin(), std::make_pair<Key, V>(2, 20));
+    itCustom = mCustom.insert(mCustom.begin(), ft::make_pair<Key, V>(2, 20));
+    std::cout << std::endl << "======= TEST 6 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (itBase->first == itCustom->first) ? fOK("key pair returned") : fKO("key pair returned");
+
+
+    /* Test size() and element comparison after insert range of elem */
+    std::map<Key, V> mBase2;
+    mBase2.insert(std::make_pair<Key, V>(33, 33));
+    mBase2.insert(std::make_pair<Key, V>(44, 44));
+    mBase2.insert(std::make_pair<Key, V>(55, 55));
+    mBase2.insert(std::make_pair<Key, V>(66, 66));
+    mBase.insert(mBase2.begin(), mBase2.end());
+    mCustom.insert(mBase2.begin(), mBase2.end());
+    std::cout << std::endl << "======= TEST 7 =======" << std::endl;
+    testBasics(mBase, mCustom);
+
+
+    /* Test empty(), size() and element comparison with multiple elems */
+    std::cout << std::endl << "======= TEST 8 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (mBase.empty() == mCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test empty(), size() and element comparison after erase() one elem by iterator */
+    mBase.erase(mBase.begin());
+    mCustom.erase(mCustom.begin());
+    std::cout << std::endl << "======= TEST 9 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (mBase.empty() == mCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test empty(), size() and element comparison after erase() one elem by existing key */
+    mBase.erase(33);
+    mCustom.erase(33);
+    std::cout << std::endl << "======= TEST 10 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (mBase.empty() == mCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test empty(), size() and element comparison after erase() one elem by no existing key */
+    mBase.erase(99);
+    mCustom.erase(99);
+    std::cout << std::endl << "======= TEST 11 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (mBase.empty() == mCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test empty(), size() and element comparison after erase() by range */
+    mBase.erase(mBase.begin(), mBase.end());
+    mCustom.erase(mCustom.begin(), mCustom.end());
+    std::cout << std::endl << "======= TEST 12 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (mBase.empty() == mCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test empty(), size() and element comparison after clear() */
+    mBase.insert(mBase2.begin(), mBase2.end());
+    mCustom.insert(mBase2.begin(), mBase2.end());
+    mBase.clear();
+    mCustom.clear();
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (mBase.empty() == mCustom.empty()) ? fOK("empty()") : fKO("empty()");
+
+
+    /* Test return key_comp() */
+    typename std::map<Key, V>::key_compare compBase;
+    typename ft::Map<Key, V>::key_compare compCustom;
+    mBase.insert(mBase2.begin(), mBase2.end());
+    mCustom.insert(mBase2.begin(), mBase2.end());
+    compBase = mBase.key_comp();
+    compCustom = mCustom.key_comp();
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (compBase(1, 2) == compCustom(1, 2)) ? fOK("key_comp()") : fKO("key_comp()");
+
+
+    /* Test return key_comp() */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.key_comp()('a', 'g') == mCustom.key_comp()('a', 'g')) ? fOK("value_comp()") : fKO("value_comp()");
+
+
+    /* Test returned iterator from find() with existing key */
+    itBase = mBase.find(33);
+    itCustom = mCustom.find(33);
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (itBase->first == itCustom->first) ? fOK("find()") : fKO("find()");
+
+
+    /* Test returned iterator from find() with not existing key */
+    itBase = mBase.find(99);
+    itCustom = mCustom.find(99);
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testBasics(mBase, mCustom);
+    (itCustom == mCustom.end()) ? fOK("find()") : fKO("find()");
+
+
+    /* Test returned size_t from count() with existing key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.count(33) == mCustom.count(33)) ? fOK("count()") : fKO("count()");
+
+
+    /* Test returned size_t from count() with not existing key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.count(99) == mCustom.count(99)) ? fOK("count()") : fKO("count()");
+
+
+    /* Test returned iterator from lower_bound() with lowest key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.lower_bound(20)->first == mCustom.lower_bound(20)->first) ? fOK("lower_bound()") : fKO("lower_bound()");
+    
+
+    /* Test returned iterator from lower_bound() with exact key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.lower_bound(44)->first == mCustom.lower_bound(44)->first) ? fOK("lower_bound()") : fKO("lower_bound()");
+    
+
+    /* Test returned iterator from lower_bound() with middle key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.lower_bound(50)->first == mCustom.lower_bound(50)->first) ? fOK("lower_bound()") : fKO("lower_bound()");
+    
+    
+    /* Test returned iterator from lower_bound() with no existing key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mCustom.lower_bound(99) == mCustom.end()) ? fOK("lower_bound()") : fKO("lower_bound()");
+    
+    
+    /* Test returned iterator from upper_bound() with lowest key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.upper_bound(20)->first == mCustom.upper_bound(20)->first) ? fOK("upper_bound()") : fKO("upper_bound()");
+
+
+    /* Test returned iterator from upper_bound() with exact key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.upper_bound(44)->first == mCustom.upper_bound(44)->first) ? fOK("upper_bound()") : fKO("upper_bound()");
+    
+
+    /* Test returned iterator from upper_bound() with middle key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.upper_bound(50)->first == mCustom.upper_bound(50)->first) ? fOK("upper_bound()") : fKO("upper_bound()");
+    
+    
+    /* Test returned iterator from upper_bound() with no existing key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mCustom.upper_bound(99) == mCustom.end()) ? fOK("upper_bound()") : fKO("upper_bound()");
+
+
+    /* Test returned iterator from equal_range() with lowest key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.equal_range(20).first->first == mCustom.equal_range(20).first->first
+    && mBase.equal_range(20).second->first == mCustom.equal_range(20).second->first) ? fOK("equal_range()") : fKO("equal_range()");
+
+
+    /* Test returned iterator from equal_range() with exact key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.equal_range(44).first->first == mCustom.equal_range(44).first->first
+    && mBase.equal_range(44).second->first == mCustom.equal_range(44).second->first) ? fOK("equal_range()") : fKO("equal_range()");
+    
+
+    /* Test returned iterator from equal_range() with middle key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mBase.equal_range(50).first->first == mCustom.equal_range(50).first->first
+    && mBase.equal_range(50).second->first == mCustom.equal_range(50).second->first) ? fOK("equal_range()") : fKO("equal_range()");
+    
+    
+    /* Test returned iterator from equal_range() with no existing key */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    (mCustom.equal_range(99).first == mCustom.end()
+    && mCustom.equal_range(99).second == mCustom.end()) ? fOK("equal_range()") : fKO("equal_range()");
+
+    /* Test relationals operators */
+    std::map<Key, V> cmp_mBase;
+    ft::Map<Key, V> cmp_mCustom;
+    cmp_mBase.insert(std::make_pair(1, 40));
+    cmp_mCustom.insert(ft::make_pair(1, 40));
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testRelationalOperators(mBase, cmp_mBase, mCustom, cmp_mCustom);
+
+
+    /* Test size() and map elements comparison after swap */
+    mBase.swap(cmp_mBase);
+    mCustom.swap(cmp_mCustom);
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testBasics(mBase, mCustom);
+
+
+    /* Test iterators */
+    mBase.insert(std::make_pair(4, 1));
+    mBase.insert(std::make_pair(15, 1));
+    mBase.insert(std::make_pair(22, 1));
+    mBase.insert(std::make_pair(10, 1));
+    mCustom.insert(ft::make_pair(4, 1));
+    mCustom.insert(ft::make_pair(15, 1));
+    mCustom.insert(ft::make_pair(22, 1));
+    mCustom.insert(ft::make_pair(10, 1));
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testIterator(mBase, mCustom);
+
+
+    /* Test reverse iterators */
+    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    testReverseIterator(mBase, mCustom);
+
+}
+
+
 int main()
 {
-    std::pair<int, int> p(99, 77);
-    std::cout << std::get<0>(p) << std::endl;
-    std::pair<char, char> p2;
-    p2 = p;
-    std::cout << std::get<0>(p2) << std::endl;
-
-    std::cout << "========\n";
-
-    std::map<int, int> m1;
-
-    m1.insert(p);
-    std::cout << m1[99] << std::endl;
-    std::pair<int, int> j(120, 120);
-    m1.insert(j);
-    std::cout << "========\n";
-    for (std::map<int, int>::iterator it = m1.begin(); it != m1.end(); it++)
-        std::cout << it->first << std::endl;
-
-    m1.insert(std::make_pair(5, 5));
-
-
-    std::cout << "========\n";
-
-    for (std::map<int, int>::iterator it = m1.begin(); it != m1.end(); it++)
-        std::cout << it->first << std::endl;
-
-    std::cout << "======== START MY TREE ========\n";
-
-    ft::Tree<int, int> my_tree;
-    ft::pair<int, int> my_pair0(0, 1);
-    ft::pair<int, int> my_pair1(1, 1);
-    ft::pair<int, int> my_pair2(2, 1);
-    ft::pair<int, int> my_pair3(3, 1);
-    ft::pair<int, int> my_pair4(4, 1);
-    ft::pair<int, int> my_pair5(5, 1);
-    ft::pair<int, int> my_pair6(6, 1);
-    ft::pair<int, int> my_pair7(7, 1);
-    ft::pair<int, int> my_pair8(8, 1);
-    ft::pair<int, int> my_pair9(9, 1);
-    ft::pair<int, int> my_pair10(10, 1);
-    ft::pair<int, int> my_pair11(11, 1);
-    ft::pair<int, int> my_pair12(12, 1);
-    ft::pair<int, int> my_pair13(13, 1);
-    ft::pair<int, int> my_pair14(14, 1);
-    ft::pair<int, int> my_pair15(15, 1);
-    ft::pair<int, int> my_pair16(16, 1);
-    ft::pair<int, int> my_pair17(17, 1);
-    ft::pair<int, int> my_pair18(18, 1);
-    ft::pair<int, int> my_pair19(19, 1);
-    ft::pair<int, int> my_pair20(20, 1);
-    ft::pair<int, int> my_pair21(21, 1);
-    ft::pair<int, int> my_pair22(22, 1);
-    ft::pair<int, int> my_pair23(23, 1);
-    ft::pair<int, int> my_pair24(24, 1);
-    ft::pair<int, int> my_pair25(25, 1);
-
-
-    //my_tree.createNode(my_pair1);
-    //my_tree.createNode(my_pair2);
-    //my_tree.createNode(my_pair3);
-    //my_tree.createNode(my_pair4);
-    //my_tree.createNode(my_pair5);
-
-    /*
-    my_tree.createNode(my_pair6);
-    my_tree.createNode(my_pair7);
-    my_tree.createNode(my_pair8);
-    my_tree.createNode(my_pair9);
-    my_tree.createNode(my_pair10);
-    my_tree.createNode(my_pair11);
-    my_tree.createNode(my_pair12);
-    my_tree.createNode(my_pair13);
-    my_tree.createNode(my_pair14);
-    my_tree.createNode(my_pair15);
-    my_tree.createNode(my_pair16);
-    my_tree.createNode(my_pair17);
-*/
-
-    my_tree.displayTree();
-/*
-    std::cout << "-------- TEST CUSTOM IT -------\n";
-
-    ft::Map<int, int>::iterator it(my_tree.begin());
-    it--;
-    std::cout << it->first << std::endl;
-    it++;
-    std::cout << it->first << std::endl;
-    it++;
-    std::cout << it->first << std::endl;
-    it++;
-    std::cout << it->first << std::endl;
-    it++;
-    std::cout << it->first << std::endl;
-    it++;
-    std::cout << it->first << std::endl;
-    it++;
-    std::cout << it->first << std::endl;
-    std::cout << "-------- TEST border -------\n";
-    std::cout << my_tree.keySearch(1)->getLeft() << std::endl;
-    std::cout << my_tree.keySearch(5)->getRight() << std::endl;
-
-    std::cout << "-------- TEST add border key -------\n";
-    my_tree.createNode(my_pair0);
-    my_tree.displayTree();
-*/
-
-
-
-/* TEST DELETE ROOT
-    std::cout << "-------- DISPLAY TREE -------\n";
-    my_tree.displayTree();
-
-    std::cout << "-------- RESULT KEY SEARCH -------\n";
-    std::cout << my_tree.keySearch(1) << std::endl;
-
-    my_tree.DeleteNode(my_tree.keySearch(10));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT NULL -------\n";
-    my_tree.displayTree();
-
-    my_tree.createNode(my_pair10);
-    my_tree.DeleteNode(my_tree.keySearch(10));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT NO CHILD -------\n";
-    my_tree.displayTree();
-
-    my_tree.createNode(my_pair10);
-    my_tree.createNode(my_pair5);
-    my_tree.DeleteNode(my_tree.keySearch(10));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT LEFT CHILD -------\n";
-    my_tree.displayTree();
-
-    my_tree.createNode(my_pair10);
-    my_tree.DeleteNode(my_tree.keySearch(5));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT RIGHT CHILD -------\n";
-    my_tree.displayTree();
-
-    my_tree.createNode(my_pair5);
-    my_tree.createNode(my_pair15);
-    my_tree.DeleteNode(my_tree.keySearch(10));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT TWO CHILD ONE ELEM -------\n";
-    my_tree.displayTree();
-
-    my_tree.createNode(my_pair3);
-    my_tree.createNode(my_pair2);
-    my_tree.DeleteNode(my_tree.keySearch(5));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT TWO CHILD LEFT BRANCH -------\n";
-    my_tree.displayTree();
-
-
-    my_tree.DeleteNode(my_tree.keySearch(2));
-    my_tree.DeleteNode(my_tree.keySearch(3));
-    my_tree.DeleteNode(my_tree.keySearch(15));
-    my_tree.createNode(my_pair10);
-    my_tree.createNode(my_pair15);
-    my_tree.createNode(my_pair5);
-    my_tree.createNode(my_pair3);
-    my_tree.createNode(my_pair2);
-    my_tree.createNode(my_pair1);
-
-
-    my_tree.DeleteNode(my_tree.keySearch(10));
-    std::cout << "-------- DISPLAY TREE APRES DELETE FOUR COMPLETE TREE -------\n";
-    my_tree.displayTree();
-
-    my_tree.DeleteNode(my_tree.keySearch(1));
-    my_tree.DeleteNode(my_tree.keySearch(2));
-    my_tree.DeleteNode(my_tree.keySearch(3));
-    my_tree.DeleteNode(my_tree.keySearch(5));
-    my_tree.DeleteNode(my_tree.keySearch(15));
-    my_tree.createNode(my_pair10);
-    my_tree.createNode(my_pair15);
-    my_tree.createNode(my_pair5);
-
-    my_tree.createNode(my_pair1);
-    my_tree.createNode(my_pair3);
-    my_tree.createNode(my_pair4);
-
-    my_tree.createNode(my_pair7);
-    my_tree.createNode(my_pair6);
-    my_tree.createNode(my_pair9);
-    my_tree.createNode(my_pair8);
-
-    my_tree.createNode(my_pair12);
-    my_tree.createNode(my_pair11);
-    my_tree.createNode(my_pair13);
-    my_tree.createNode(my_pair14);
-
-    my_tree.createNode(my_pair20);
-    my_tree.createNode(my_pair17);
-    my_tree.createNode(my_pair25);
-
-    std::cout << "-------- DISPLAY TREE AVANT DELETE ROOT COMPLETE TREE -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>>>>>>> AVANT DELETE\n";
-
-    my_tree.DeleteNode(my_tree.keySearch(10));
-    std::cout << "-------- DISPLAY TREE APRES DELETE ROOT ROOT CHILD LEFT BRANCH -------\n";
-    my_tree.displayTree();
-*/
-
-
-
-
-
-/* TEST VRAI IT 
-    std::cout << "======== START MAP IT ========\n";
-    std::map<int,int> map;
-    map.insert(std::make_pair(1, 4));
-    map.insert(std::make_pair(5, 4));
-    map.insert(std::make_pair(10, 4));
-    map.insert(std::make_pair(33, 4));
-    map.insert(std::make_pair(44, 4));
-
-    std::map<int, int>::iterator it1 = map.begin();
-    std::map<int, int>::iterator it2 = map.begin();
-    std::cout << (++it1)->first << std::endl;
-    std::cout << (it1++)->first << std::endl;
-    std::cout << it1->first << std::endl;
-    std::cout << (++it1)->first << std::endl;
-    std::cout << (++it1)->first << std::endl;
-    std::cout << (++it1)->first << std::endl;
-    //std::cout << (it < it2) << std::endl;
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-    my_tree.createNode(my_pair10);
-    my_tree.createNode(my_pair5);
-    my_tree.createNode(my_pair7);
-    my_tree.createNode(my_pair6);
-    my_tree.createNode(my_pair9);
-    my_tree.createNode(my_pair8);
-    my_tree.createNode(my_pair1);
-    my_tree.createNode(my_pair3);
-    my_tree.createNode(my_pair4);
-
-    my_tree.createNode(my_pair15);
-    my_tree.createNode(my_pair12);
-    my_tree.createNode(my_pair11);
-    my_tree.createNode(my_pair13);
-    my_tree.createNode(my_pair14);
-    my_tree.createNode(my_pair20);
-    my_tree.createNode(my_pair17);
-    my_tree.createNode(my_pair25);
-
-    std::cout << "-------- DISPLAY TREE AVANT DELETE -------\n";
-    my_tree.displayTree();
-
- // TEST DELETE NODE NOT ROOT 
- 
-    my_tree.DeleteNode(my_tree.keySearch(4));
-    std::cout << "-------- DISPLAY TREE APRES DELETE 4 -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>> FIN DISPLAY\n";
-
-    std::cout << my_tree.keySearch(9) << std::endl;
-    my_tree.DeleteNode(my_tree.keySearch(9));
-    std::cout << "-------- DISPLAY TREE APRES DELETE 9 -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>> FIN DISPLAY\n";
-
-    my_tree.DeleteNode(my_tree.keySearch(13));
-    std::cout << "-------- DISPLAY TREE APRES DELETE 13 -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>> FIN DISPLAY\n";
-
-    my_tree.DeleteNode(my_tree.keySearch(15));
-    std::cout << "-------- DISPLAY TREE APRES DELETE 15 -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>> FIN DISPLAY\n";
-
-    my_tree.DeleteNode(my_tree.keySearch(1));
-    std::cout << "-------- DISPLAY TREE APRES DELETE 1 -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>> FIN DISPLAY\n";
-
-    my_tree.DeleteNode(my_tree.keySearch(25));
-    std::cout << "-------- DISPLAY TREE APRES DELETE 25 -------\n";
-    my_tree.displayTree();
-    std::cout << ">>>> FIN DISPLAY\n";
-
-
+    testMap<int, char>();
 }

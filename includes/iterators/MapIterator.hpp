@@ -6,40 +6,23 @@
 
 namespace ft
 {
-    template < typename Key, typename T>
+    template < typename T, typename N>
     class MapIterator
     {
         public:
-            /* Alias assignement */
-            typedef Key key_type;
-            typedef key_type* key_pointer;
-            typedef const key_type* const_key_pointer;
-            typedef key_type& key_reference;
-            typedef const key_type& const_key_reference;
-            typedef T mapped_type;
-            typedef mapped_type* mapped_pointer;
-            typedef const mapped_type* const_mapped_pointer;
-            typedef mapped_type& mapped_reference;
-            typedef const mapped_type& const_mapped_reference;
-            typedef pair<const key_type, mapped_type> value_type;
-            typedef value_type* value_pointer;
-            typedef const value_type* const_value_pointer;
-            typedef value_type& value_reference;
-            typedef const value_type& const_value_reference;
-            typedef TreeNode<key_type, mapped_type> node;
+            typedef T value_type;
+            typedef value_type* pointer;
+            typedef const value_type* const_pointer;
+            typedef value_type& reference;
+            typedef const value_type& const_reference;
+            typedef N node;
             typedef node* node_pointer;
-            typedef const node* const_node_pointer;
             typedef node& node_reference;
-            typedef const node& const_node_reference;
-            typedef Tree<Key, T> Tree;
-            typedef Tree* tree_pointer;
-            typedef const Tree* const_pointer;
-            typedef Tree& reference;
-            typedef const Tree& const_reference;
 
-        private:
+        protected:
             node_pointer _iter;
 
+        private:
             /* private member functions */
             void nextKey(void)
             {
@@ -65,14 +48,25 @@ namespace ft
 
             void prevKey(void)
             {
+                //std::cout << "PREV KEY\n";
                 if (this->_iter->hasLeft())
                 {
+                    //std::cout << "prev Left\n";
+
                     this->_iter = this->_iter->getLeft();
                     while (this->_iter->hasRight())
                         this->_iter = this->_iter->getRight();
                 }
                 else
+                {
+                    node_pointer tmp(this->_iter);
                     this->_iter = this->_iter->getParent();
+                    while (this->_iter->getLeft() == tmp)
+                    {
+                        tmp = this->_iter;
+                        this->_iter = this->_iter->getParent();
+                    }
+                }
             }
 
         public:
@@ -94,12 +88,16 @@ namespace ft
 
 
             /* Accessors operators */
-            value_pointer operator->(void) {
+            pointer operator->(void) {
                 return (&(this->_iter->getPair()));
             }
 
-            const_value_pointer operator->(void) const {
+            const_pointer operator->(void) const {
                 return (&(this->_iter->getPair()));
+            }
+
+            node_pointer getNode(void) {
+                return (this->_iter);
             }
 
 
@@ -125,6 +123,7 @@ namespace ft
                 this->prevKey();
                 return (copy);
             }
+
 
             /* Comparison operators */
             bool operator==(const MapIterator &other) {

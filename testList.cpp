@@ -13,7 +13,7 @@ void testBasics(const std::list<T>& lBase, const ft::List<T>& lCustom)
     typename ft::List<T>::const_iterator itCustom = lCustom.begin();
     if (lCustom.size() > 0)
     {
-        while (itBase != lBase.end() || itCustom != lCustom.end())
+        while (itBase != lBase.end() && itCustom != lCustom.end())
         {
             if (*itBase != *itCustom)
             {

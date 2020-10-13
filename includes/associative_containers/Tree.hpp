@@ -1,6 +1,9 @@
 #ifndef TREE_HPP
 # define TREE_HPP
 
+# include "../iterators/MapIterator.hpp"
+# include "../iterators/ReverseIterator.hpp"
+
 namespace ft
 {
     template < typename T1, typename T2 >
@@ -14,7 +17,7 @@ namespace ft
         first_type first;
         second_type second;
 
-        /* Constructors, Copy assignement and Destructor */
+        /* Constructors and Copy assignement */
         pair() : first(first_type()), second(second_type()) {}
 
         pair(const first_type& first, const second_type& second)
@@ -42,6 +45,12 @@ namespace ft
         }
 
     };
+
+    template < typename T1, typename T2 >
+    pair<T1, T2> make_pair(T1 x, T2 y)
+    {
+        return(pair<T1, T2>(x, y));
+    }
 
     template < typename T >
     struct less : public std::binary_function<T, T, bool>
@@ -77,8 +86,6 @@ namespace ft
             typedef const value_type& const_value_reference;
 
         private:
-            //key_type _key;
-            //value_type _value;
             value_type _pair;
             node_pointer _parent;
             node_pointer _right;
@@ -111,8 +118,6 @@ namespace ft
             {
                 if (this != &other)
                 {
-                    //this->_key = other._key;
-                    //this->_value = other._value;
                     this->_pair = other._pair;
                     this->_parent = other._parent;
                     this->_right = other._right;
@@ -130,10 +135,6 @@ namespace ft
             const_value_reference getPair(void) const {
                 return (this->_pair);
             }
-
-            //key_reference getKey(void) {
-            //    return (this->_pair.first);
-            //}
 
             const_key_reference getKey(void) const {
                 return (this->_pair.first);
@@ -155,32 +156,35 @@ namespace ft
                 return(this->_right);
             }
 
+            const_node_pointer getLeft(void) const {
+                return(this->_left);
+            }
+
+            const_node_pointer getRight(void) const {
+                return(this->_right);
+            }
+
             node_pointer getParent(void) {
                 return(this->_parent);
             }
 
+            const_node_pointer getParent(void) const {
+                return(this->_parent);
+            }
+
+
+            /* Verification member function */
             bool hasParent(void) const {
                 return(this->_parent);
             }
 
-            bool hasLeft(node_pointer begin) const {
+            bool hasLeft(node_pointer begin = nullptr) const {
                 return(this->_left && this->_left != begin);
             }
 
-            bool hasRight(node_pointer end) const {
+            bool hasRight(node_pointer end = nullptr) const {
                 return(this->_right && this->_right != end);
             }
-
-
-
-            bool hasLeftDisplay() const {
-                return(this->_left);
-            }
-
-            bool hasRightDisplay(void) const {
-                return(this->_right);
-            }
-
 
             bool hasNoChildNode(node_pointer begin, node_pointer end) const {
                 return (!(this->hasLeft(begin)) && !(this->hasRight(end)));
@@ -203,6 +207,12 @@ namespace ft
 
             void setParent(node_pointer node) {
                 this->_parent = node;
+            }
+
+            node_reference operator=(const_mapped_reference value)
+            {
+                this->_pair.second = value;
+                return(*this);
             }
 
     };
@@ -240,7 +250,10 @@ namespace ft
             typedef const value_type* const_value_pointer;
             typedef value_type& value_reference;
             typedef const value_type& const_value_reference;
-
+            typedef MapIterator<value_type, node> iterator;
+            typedef MapIterator<const value_type, const node> const_iterator;
+            typedef ReverseIterator<iterator> reverse_iterator;
+            typedef ReverseIterator<const_iterator> const_reverse_iterator;
 
         private:
             node_pointer _begin;
@@ -259,16 +272,20 @@ namespace ft
                 setupBorder();
             }
 
-            Tree(const_node_reference other)
-            : _begin(other._begin), _root(other._root),
-            _end(other._end), _cmp(other._cmp), _alloc(other._alloc)
+            Tree(const Tree& other)
+            : _begin(nullptr), _root(nullptr),
+            _end(nullptr), _cmp(other._cmp), _alloc(other._alloc)
             {
-
+                setupBorder();
+                iterator first(other.begin());
+                iterator end(other.end());
+                for (; first != end; first++)
+                    createNode(first.getNode()->getPair());
             }
 
             ~Tree() {}
 
-            node_reference operator=(const_reference other)
+            Tree& operator=(const_reference other)
             {
                 if (this != &other)
                 {
@@ -284,36 +301,60 @@ namespace ft
 
             /* member functions */
 
-
-
-            node_pointer begin(void) {
-                return (this->_root);
+            /* Get begin and end for iterator */
+            node_pointer begin(void) const
+            {
+                if (this->_root)
+                    return (this->_begin->getParent());
+                else
+                    return (this->_begin);
             }
 
-            const_node_pointer begin(void) const {
-                return (this->_root);
-            }
-
-            node_pointer end(void) {
-                return (this->_end);
-            }
-
-            const_node_pointer end(void) const {
+            node_pointer end(void) const {
                 return (this->_end);
             }
 
 
-
+            /* Borders management */
             void setupBorder(void)
             {
                 this->_begin = this->_alloc.allocate(1);
                 this->_alloc.construct(this->_begin, value_type());
                 this->_end = this->_alloc.allocate(1);
                 this->_alloc.construct(this->_end, value_type());
-                std::cout << "BEGIN = " << this->_begin << std::endl;
-                std::cout << "END = " << this->_end << std::endl;
-                //this->_root = this->_begin;
             }
+
+            void removeBorders(void)
+            {
+                if (this->_begin->hasParent())
+                    this->_begin->getParent()->setLeft(nullptr);
+                this->_begin->setParent(nullptr);
+                if (this->_end->hasParent())
+                    this->_end->getParent()->setRight(nullptr);
+                this->_end->setParent(nullptr);
+            }
+
+            void addBorders(void)
+            {
+                if (this->_root)
+                {
+                    this->_begin->setParent(this->getBranchMin(this->_root));
+                    this->getBranchMin(this->_root)->setLeft(this->_begin);
+                    this->_end->setParent(this->getBranchMax(this->_root));
+                    this->getBranchMax(this->_root)->setRight(this->_end);
+                }
+            }
+
+            void clearBorders(void)
+            {
+                this->_alloc.destroy(this->_begin);
+                this->_alloc.deallocate(this->_begin, 1);
+                this->_alloc.destroy(this->_end);
+                this->_alloc.deallocate(this->_end, 1);
+            }
+
+
+            /* Node creation */
 
             node_pointer createNode(const_value_reference pair)
             {
@@ -321,76 +362,161 @@ namespace ft
 
                 if (!(this->keySearch(pair.first)))
                 {
+                    removeBorders();
                     new_node = this->_alloc.allocate(1);
                     this->_alloc.construct(new_node, pair);
+                    if (this->_root == nullptr)
+                        this->_root = new_node;
+                    else
+                        addNode(new_node, this->_root);
+                    addBorders();
+                    return (new_node);
                 }
-                else
-                    return (nullptr);
-
-                if (this->_root == nullptr)
-                {
-                    this->_root = new_node;
-                    this->_root->setLeft(this->_begin);
-                    this->_root->setRight(this->_end);
-                    this->_begin->setParent(this->_root);
-                    this->_end->setParent(this->_root);
-                }
-                else
-                    addNode(new_node);
-                return (new_node);
-            }
-
-
-            void addNode(node_pointer new_node) {
-                addNode(new_node, this->_root);
+                return (this->keySearch(pair.first));
             }
 
             void addNode(node_pointer new_node, node_pointer node)
             {
-               // std::cout << "ENTREE ADD NODE\n";
-                //std::cout << "new_node->getKey() = " << new_node->getKey() << std::endl;
-                //std::cout << "node->getKey() = " << node->getKey() << std::endl;
-                if (_cmp(new_node->getKey(), node->getKey()))
+                if (this->_cmp(new_node->getKey(), node->getKey()))
                 {
-                    //std::cout << "ENTREE LEFT\n";
-                    if (node->hasLeft(this->_begin) && node->getLeft() != this->_begin)
+                    if (node->hasLeft(this->_begin))
                         return(addNode(new_node, node->getLeft()));
                     else
-                    {
-                        if (node->getLeft() == this->_begin)
-                        {
-                            node->setLeft(new_node);
-                            new_node->setLeft(this->_begin);
-                            this->_begin->setParent(new_node);
-                        }
-                        else
-                            node->setLeft(new_node);
-                    }
-
+                        node->setLeft(new_node);
                 }
                 else
                 {
-                    //std::cout << "ENTREE RIGHT\n";
-                    if (node->hasRight(this->_end) && node->getRight() != this->_end)
+                    if (node->hasRight(this->_end))
                         return(addNode(new_node, node->getRight()));
                     else
-                    {
-                        //std::cout << "ENTREE SET RIGHT\n";
-                        if (node->getRight() == this->_end)
-                        {
-                            node->setRight(new_node);
-                            new_node->setRight(this->_end);
-                            this->_end->setParent(new_node);
-                        }
-                        else
-                        {
-                            node->setRight(new_node);
-                        }
-                    }
+                        node->setRight(new_node);
                 }
                 new_node->setParent(node);
             }
 
+
+            /* Node deletion */
+            void deleteNode(node_pointer node)
+            {
+                if (!node)
+                    return ;
+                removeBorders();
+                if (node == this->_root)
+                    this->deleteRootNode();
+                else
+                {
+                    if (node->hasNoChildNode(this->_begin, this->_end))
+                        this->setParentNode(node);
+                    else if (node->hasOneChildNode(this->_begin, this->_end))
+                    {
+                        if (node->hasLeft(this->_begin))
+                            this->setParentNode(node, node->getLeft());
+                        else
+                            this->setParentNode(node, node->getRight());
+                    }
+                    else
+                    {
+                        setParentNode(node, node->getRight());
+                        this->getBranchMin(node->getRight())->setLeft(node->getLeft());
+                        node->getLeft()->setParent(getBranchMin(node->getRight()));
+                    }
+                }
+                addBorders();
+                this->_alloc.destroy(node);
+                this->_alloc.deallocate(node, 1);
+            }
+
+            void setParentNode(node_pointer node, node_pointer new_child = nullptr)
+            {
+                if (node->getParent()->getLeft() == node)
+                    node->getParent()->setLeft(new_child);
+                else if (node->getParent()->getRight() == node)
+                    node->getParent()->setRight(new_child);
+                if (new_child)
+                    new_child->setParent(node->getParent());
+            }
+
+            void deleteRootNode(void)
+            {
+                if (this->_root->hasNoChildNode(this->_begin, this->_end)) // If there is only root node in tree
+                    this->_root = nullptr;
+                else if (this->_root->hasOneChildNode(this->_begin, this->_end)) // If root node has only one child
+                {
+                    if (this->_root->hasLeft(this->_begin)) // Set root child as root
+                        this->_root = this->_root->getLeft();
+                    else
+                        this->_root = this->_root->getRight();
+                    this->_root->setParent(nullptr); // Set new root parent as null
+                }
+                else
+                {
+                    node_pointer new_root = this->getBranchMax(this->_root->getLeft()); // Capture max key of tree left side as new root
+                    new_root->setRight(this->_root->getRight()); // Set root right child as new root right child
+                    this->_root->getRight()->setParent(new_root); // Set new root as parent for root right child
+
+                    if (new_root->getParent()->getRight() == new_root)
+                        new_root->getParent()->setRight(nullptr);
+                    new_root->setParent(nullptr);
+
+                    if (!(this->isOnLeftBranch(new_root, this->getBranchMin(this->_root)))) // If new_root was not on principal left branch
+                    {
+                        node_pointer min_new_root = this->getBranchMin(new_root); // Capture min node on new root tree
+                        min_new_root->setLeft(this->_root->getLeft()); // Set root left branch on new root min left branch
+                        this->_root->getLeft()->setParent(min_new_root);
+                    }
+                    this->_root = new_root;
+                }
+            }
+
+
+            /* Node seeking */
+            node_pointer keySearch(const_key_reference key) const {
+                return(keySearch(key, this->_root));
+            }
+
+            node_pointer keySearch(const_key_reference key, node_pointer node) const
+            {
+                node_pointer ret(nullptr);
+
+                if (!node)
+                    return (nullptr);
+                if (node->getKey() == key)
+                    return (node);
+                if (node->hasLeft(this->_begin))
+                    if ((ret = keySearch(key, node->getLeft())))
+                        return (ret);
+                if (node->hasRight(this->_end))
+                    if ((ret = keySearch(key, node->getRight())))
+                        return (ret);
+                return (ret);
+            }
+
+            node_pointer searchNextKey(const_key_reference key) const {
+                return (searchNextKey(key, this->_root));
+            }
+
+            node_pointer searchNextKey(const_key_reference key, node_pointer node) const
+            {
+                if (this->_cmp(key, node->getKey()))
+                {
+                    if (node->hasLeft(this->_begin))
+                        return (searchNextKey(key, node->getLeft()));
+                    else
+                        return (node);
+                }
+                else
+                {
+                    if (node->hasRight(this->_end))
+                        return (searchNextKey(key, node->getRight()));
+                    else if (node->getRight() == this->_end)
+                        return (this->_end);
+                    else
+                        return (node->getParent());
+                }
+            }
+
+
+            /* Helper functions */
             node_pointer getBranchMin(node_pointer node)
             {
                 if (node->hasLeft(this->_begin))
@@ -400,13 +526,8 @@ namespace ft
 
             node_pointer getBranchMax(node_pointer node)
             {
-                std::cout << "--------------\n[" << node->getKey() << "] getBMAX\n";
                 if (node->hasRight(this->_end))
-                {
-                std::cout << "[" << node->getKey() << "] getBMAX hasRight\n";
                     return (getBranchMax(node->getRight()));
-                }
-                std::cout << "[" << node->getKey() << "] getBMAX final\n";
                 return (node);
             }
 
@@ -417,196 +538,6 @@ namespace ft
                 if (node->hasLeft(this->_begin))
                     return (isOnLeftBranch(node->getLeft(), search_node));
                 return (false);
-            }
-
-            void DeleteNode(node_pointer node)
-            {
-                if (!node)
-                    return ;
-                removeBorders();
-                if (node == this->_root)
-                    this->DeleteRootNode();
-                else
-                {
-                    if (node->hasNoChildNode(this->_begin, this->_end))
-                    {
-                        std::cout << "DELETE NO CHILD NODE\n";
-                        this->setParentNode(node);
-                    }
-                    else if (node->hasOneChildNode(this->_begin, this->_end))
-                    {
-                        std::cout << "DELETE ONE CHILD NODE\n";
-                        if (node->hasLeft(this->_begin))
-                            this->setParentNode(node, node->getLeft());
-                        else
-                            this->setParentNode(node, node->getRight());
-                    }
-                    else
-                    {
-                        std::cout << "DELETE TWO CHILD NODE\n";
-                        setParentNode(node, node->getRight());
-                        this->getBranchMin(node->getRight())->setLeft(node->getLeft());
-                        node->getLeft()->setParent(getBranchMin(node->getRight()));
-                    }
-                }
-                addBorders();
-                // Destroy & Deallocate
-            }
-
-            void setParentNode(node_pointer node, node_pointer new_child = nullptr)
-            {
-                if (new_child)
-                    std::cout << "new_child->getKey() = " << new_child->getKey() << std::endl;
-                if (node->getParent()->getLeft() == node)
-                    node->getParent()->setLeft(new_child);
-                else if (node->getParent()->getRight() == node)
-                    node->getParent()->setRight(new_child);
-
-                if (new_child)
-                    new_child->setParent(node->getParent());
-
-                if (this->isBorder(node->getLeft()))
-                {
-                    std::cout << "this->getBranchMin(new_child->getParent())->getKey() = " << this->getBranchMin(new_child->getParent())->getKey() << std::endl;
-                    this->getBranchMin(node->getParent())->setLeft(this->_begin);
-                    if (new_child)
-                        this->_begin->setParent(new_child);
-                    else
-                        this->_begin->setParent(node->getParent());
-                    
-                }
-                if (this->isBorder(node->getRight()))
-                {
-                    this->getBranchMax(node->getParent())->setRight(this->_end);
-                    if (new_child)
-                        this->_end->setParent(new_child);
-                    else
-                        this->_end->setParent(node->getParent());
-                }
-            }
-
-            void DeleteRootNode(void)
-            {
-                if (this->_root->hasNoChildNode(this->_begin, this->_end))
-                    this->_root = nullptr;
-                else if (this->_root->hasOneChildNode(this->_begin, this->_end))
-                {
-                    if (this->_root->hasLeft(this->_begin))
-                    {
-                        this->_end->setParent()
-                        this->getBranchMax(this->_root->getLeft())->setRight(this->_end);
-                        this->_root = this->_root->getLeft();
-                        this->_root->setParent(nullptr);
-                    }
-                    else
-                    {
-                        this->_root = this->_root->getRight();
-                        this->_root->setRight(nullptr);
-                    }
-                }
-                else
-                {
-                    //std::cout << "============ ENTREE ROOT 2 child ============ \n";
-                    node_pointer new_root = this->getBranchMax(this->_root->getLeft());
-                    //std::cout << "new_root->getKey() = " << new_root->getKey() << std::endl;
-
-                    //std::cout << "\n---------- ETAPE 1 -----------\n";
-                    new_root->setRight(this->_root->getRight());
-                    this->_root->getRight()->setParent(new_root);
-                    //std::cout << "new_root->getRight()->getKey() = " << new_root->getRight()->getKey() << std::endl;
-                    //std::cout << "this->_root->getRight()->getParent()->getKey() = " << this->_root->getRight()->getParent()->getKey() << std::endl;
-                    
-                        
-                    //std::cout << "\n---------- ETAPE 2 -----------\n";
-                    //std::cout << "new_root->getParent()->getKey() = " << new_root->getParent()->getKey() << std::endl;
-                    if (new_root->getParent()->getRight() == new_root)
-                        new_root->getParent()->setRight(nullptr);
-                    new_root->setParent(nullptr);
-                   // std::cout << "new_root->getParent() = " << new_root->getParent() << std::endl;
-
-
-
-                    //std::cout << "\n---------- ETAPE 3 -----------\n";
-                    if (!(this->isOnLeftBranch(new_root, this->getBranchMin(this->_root))))
-                    {
-                        node_pointer min_new_root = this->getBranchMin(new_root);
-                        //std::cout << "ENTREE IS NOT ON LEFT BRANCH\n";
-                        //std::cout << "min_new_root->getKey() = " << min_new_root->getKey() << std::endl;
-                        //std::cout << "this->_root->getLeft() = " << this->_root->getLeft()->getKey() << std::endl;
-                        min_new_root->setLeft(this->_root->getLeft());
-                        //std::cout << "this->_root->getLeft() = " << this->_root->getLeft()->getKey() << std::endl;
-                        //std::cout << "min_new_root->getKey() = " << min_new_root->getKey() << std::endl;
-                        this->_root->getLeft()->setParent(min_new_root);
-                    }
-                    this->_root = new_root;
-                }
-
-            }
-
-            node_pointer keySearch(const_key_reference key) {
-                return(keySearch(key, this->_root));
-            }
-
-            node_pointer keySearch(const_key_reference key, node_pointer node)
-            {
-                //std::cout << "-----------\n";
-                //std::cout << "[" << node->getKey() << "] ENTREE KEYSEARCH"  << std::endl;
-                if (!node)
-                    return (nullptr);
-                node_pointer ret = nullptr;
-                if (node->getKey() == key && !(this->isBorder(node)))
-                    return (node);
-                if (node->hasLeft(this->_begin))
-                {
-                    //std::cout << "[" << node->getKey() << "] ENTREE LEFT"  << std::endl;
-                    ret = keySearch(key, node->getLeft());
-                    //std::cout << "[" << node->getKey() << "] RET LEFT = " << ret << std::endl;
-                    if (ret)
-                        return (ret);
-                }
-                if (node->hasRight(this->_end))
-                {
-                    //std::cout << "[" << node->getKey() << "] ENTREE RIGHT"  << std::endl;
-                    ret = keySearch(key, node->getRight());
-                    //std::cout << "[" << node->getKey() << "] RET RIGHT = " << ret << std::endl;
-                    if (ret)
-                        return (ret);
-                }
-                //std::cout << "[" << node->getKey() << "] RET FINAL = " << ret << std::endl;
-                return (ret);
-            }
-
-            void displayTree(void) {
-                displayTree(this->_root);
-            }
-
-            void displayTree(node_pointer node)
-            {
-                if (!node)
-                    return ;
-                //std::cout << "[" << node->getKey() << "] ENTREE DISPLAY"  << std::endl;
-                if (node->hasLeftDisplay())
-                {
-                  //  std::cout << "[" << node->getKey() << "] ENTREE DISPLAY LEFT"  << std::endl;
-                    displayTree(node->getLeft());
-                }
-                std::cout << "----------------\n";
-                std::cout << "Key = " << node->getKey() << std::endl;
-                std::cout << "Value = " << node->getValue() << std::endl;
-                if (node->hasRightDisplay())
-                {
-                  //  std::cout << "[" << node->getKey() << "] ENTREE DISPLAY RIGHT"  << std::endl;
-                    displayTree(node->getRight());
-                }
-            }
-
-            bool isBorder(node_pointer node) const {
-                return (node == this->_begin || node == this->_end);
-            }
-
-            bool areChildBorder(node_pointer node) const {
-                return ((node->getLeft() == this->_begin)
-                || node->getRight() == this->_end);
             }
 
     };

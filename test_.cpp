@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <map>
 #include "includes/sequence_containers/List.hpp"
+#include "includes/associative_containers/Map.hpp"
 
 int main()
 {
@@ -141,6 +143,49 @@ int main()
     ft::List<int>yo;
     yo.push_back(1);
     yo.push_back(12);
-    system("leaks a.out");
+    //system("leaks a.out");
 
+    std::cout << "================" << std::endl;
+    std::cout << "================" << std::endl;
+
+    std::cout << "================" << std::endl;
+    ft::Map<int, int> my_map;
+    my_map[1] = 20;
+    my_map[2] = 45;
+    //ft::Map<int, int>::iterator my_it;
+    //my_it = my_map.begin();
+    //std::cout << my_it->first << std::endl;
+    //ft::Map<int, int>::const_iterator my_const_it(my_map.begin());
+    //std::cout <<"----- \n";
+    //my_map.cbegin();
+    std::cout << "================" << std::endl;
+    std::cout << "================" << std::endl;
+
+    std::map<int, int> map;
+    map.insert(std::make_pair(1, 1));
+    
+    std::map<int, int> map2;
+    map2.insert(std::make_pair(1, 1));
+
+    std::cout << "map == map2 = " << (map == map2) << std::endl;
+
+    map.insert(std::make_pair(2, 11));
+
+    std::cout << "map == map2 = " << (map == map2) << std::endl;
+
+    map2.insert(std::make_pair(3, 1));
+
+    std::cout << "map == map2 = " << (map == map2) << std::endl;
+    std::cout << "map < map2 = " << (map < map2) << std::endl;
+
+    std::cout << "================" << std::endl;
+
+    ft::Map<int, int> my_map2(my_map);
+    //y_map2 = my_map;
+    std::cout << "my_map.begin().getNode() = " << my_map.begin().getNode() << std::endl;
+    std::cout << "my_map2.begin().getNode() = " << my_map2.begin().getNode() << std::endl;
+
+    std::cout << "================" << std::endl;
+
+    ft::Map<int, int> my_map3;
 }
