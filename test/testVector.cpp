@@ -1,8 +1,6 @@
-#include <iostream>
 #include <vector>
-
-#include "includes/sequence_containers/Vector.hpp"
-#include "test.cpp"
+#include "../includes/sequence_containers/Vector.hpp"
+#include "test.hpp"
 
 template <typename T>
 void testBasics(std::vector<T> vBase, ft::Vector<T> vCustom)
@@ -11,7 +9,7 @@ void testBasics(std::vector<T> vBase, ft::Vector<T> vCustom)
     (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
     (vBase.front() == vCustom.front()) ? fOK("front()") : fKO("front()");
     (vBase.back() == vCustom.back()) ? fOK("back()") : fKO("back()");
-    for (int count = 0; count < vBase.size(); count++)
+    for (size_t count = 0; count < vBase.size(); count++)
     {
         if (vBase[count] != vCustom[count])
         {
@@ -176,7 +174,7 @@ void testVector(void)
     ft::Vector<T> vCustom;
 
     /* Test size() and capacity() at initialization */
-    std::cout << "======= TEST 1 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 1 =======" << std::endl;
     (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
     (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
 
@@ -484,7 +482,7 @@ void testVector(void)
     std::cout << std::endl << "======= TEST 37 =======" << std::endl;
     (vBase.size() == vCustom.size()) ? fOK("size()") : fKO("size()");
     (vBase.capacity() == vCustom.capacity()) ? fOK("capacity()") : fKO("capacity()");
-    for (int count = 0; count < vBase.size(); count++)
+    for (size_t count = 0; count < vBase.size(); count++)
     {
 
         if (vBase[count] != vCustom[count])
@@ -574,19 +572,10 @@ void testVector(void)
 
 }
 
-int main()
+void testVectors()
 {
-    std::cout << "\033[38;5;202m******************************************************" << std::endl;
+    std::cout <<  std::endl << "\033[38;5;202m******************************************************" << std::endl;
     std::cout << "***************       TEST VECTOR       **************" << std::endl;
     std::cout << "******************************************************\033[0m" << std::endl;
-
-    std::cout << std::endl;
-    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>      vector<char>      <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
-    testVector<char>();
-
-    std::cout << std::endl << std::endl;
-    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>       vector<int>      <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
     testVector<int>();
-
-    return (0);
 }

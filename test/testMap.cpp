@@ -1,9 +1,6 @@
-#include <iostream>
 #include <map>
-
-#include "includes/associative_containers/Map.hpp" 
-#include "includes/iterators/MapIterator.hpp"
-#include "test.cpp"
+#include "../includes/associative_containers/Map.hpp" 
+#include "test.hpp"
 
 template <typename Key, typename V>
 void testBasics(const std::map<Key, V>& mBase, const ft::Map<Key, V>& mCustom)
@@ -187,7 +184,7 @@ void testMap(void)
 
 
     /* Test size() and element comparison at initialization */
-    std::cout << "======= TEST 1 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 1 =======" << std::endl;
     testBasics(mBase, mCustom);
 
 
@@ -435,7 +432,10 @@ void testMap(void)
 }
 
 
-int main()
+void testMaps()
 {
+    std::cout <<  std::endl << "\033[38;5;202m******************************************************" << std::endl;
+    std::cout << "***************         TEST MAP        **************" << std::endl;
+    std::cout << "******************************************************\033[0m" << std::endl;
     testMap<int, char>();
 }

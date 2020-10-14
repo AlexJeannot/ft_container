@@ -1,10 +1,10 @@
-#ifndef VECTORITERATOR_HPP
-# define VECTORITERATOR_HPP
+#ifndef DEQUEITERATOR_HPP
+# define DEQUEITERATOR_HPP
 
 namespace ft
 {
     template < typename T >
-    class VectorIterator
+    class DequeIterator
     {
         public:
             /* Alias assignment */
@@ -20,16 +20,16 @@ namespace ft
 
         public:
             /* Constructor, Copy assignement and Destructor */
-            VectorIterator(void) : _iter(nullptr) {}
-            VectorIterator(pointer elem) : _iter(elem) {}
-            VectorIterator(const VectorIterator &other) : _iter(other._iter) {}
-            VectorIterator &operator=(const VectorIterator &other)
+            DequeIterator(void) : _iter(nullptr) {}
+            DequeIterator(pointer elem) : _iter(elem) {}
+            DequeIterator(const DequeIterator &other) : _iter(other._iter) {}
+            DequeIterator &operator=(const DequeIterator &other)
             {
                 if (this != &other)
                     this->_iter = other._iter;
                 return (*this);
             }
-            virtual ~VectorIterator(void) {}
+            virtual ~DequeIterator(void) {}
 
 
             /* Accessors operators */
@@ -59,79 +59,79 @@ namespace ft
 
 
             /* Increment/Decrement operators */
-            VectorIterator operator++() {
+            DequeIterator operator++() {
                 this->_iter++;
                 return (*this);
             }
 
-            VectorIterator operator++(int) {
-                VectorIterator<value_type> copy(*this);
+            DequeIterator operator++(int) {
+                DequeIterator<value_type> copy(*this);
                 this->_iter++;
                 return (copy);
             }
 
-            VectorIterator operator--() {
+            DequeIterator operator--() {
                 this->_iter--;
                 return (*this);
             }
 
-            VectorIterator operator--(int) {
-                VectorIterator<value_type> copy(*this);
+            DequeIterator operator--(int) {
+                DequeIterator<value_type> copy(*this);
                 this->_iter--;
                 return (copy);
             }
 
 
             /* Arithmetic operators */
-            VectorIterator operator+=(int index) {
+            DequeIterator operator+=(int index) {
                 this->_iter += index;
                 return (*this);
             }
 
-            VectorIterator operator+(int index) {
-                VectorIterator<value_type> copy(*this);
+            DequeIterator operator+(int index) {
+                DequeIterator<value_type> copy(*this);
                 copy._iter += index;
                 return (copy);
             }
 
-            VectorIterator operator-=(int index) {
+            DequeIterator operator-=(int index) {
                 this->_iter -= index;
                 return (*this);
             }
 
-            VectorIterator operator-(int index) {
-                VectorIterator<value_type> copy(*this);
+            DequeIterator operator-(int index) {
+                DequeIterator<value_type> copy(*this);
                 copy._iter -= index;
                 return (copy);
             }
 
-            difference_type operator-(const VectorIterator &other) {
+            difference_type operator-(const DequeIterator &other) {
                 return (this->_iter - other._iter);
             }
 
 
             /* Comparison operators */
-            bool operator==(const VectorIterator &other) {
+            bool operator==(const DequeIterator &other) {
                 return (this->_iter == other._iter);
             }
 
-            bool operator!=(const VectorIterator &other) {
+            bool operator!=(const DequeIterator &other) {
                 return (this->_iter != other._iter);
             }
 
-            bool operator<(const VectorIterator &other) {
+            bool operator<(const DequeIterator &other) {
                 return (this->_iter < other._iter);
             }
 
-            bool operator<=(const VectorIterator &other) {
+            bool operator<=(const DequeIterator &other) {
                 return (this->_iter <= other._iter);
             }
 
-            bool operator>(const VectorIterator &other) {
+            bool operator>(const DequeIterator &other) {
                 return (this->_iter > other._iter);
             }
 
-            bool operator>=(const VectorIterator &other) {
+            bool operator>=(const DequeIterator &other) {
                 return (this->_iter >= other._iter);
             }
     };

@@ -319,8 +319,6 @@ namespace ft
 
             iterator erase(iterator first, iterator last)
             {
-                size_type erase_size(0);
-
                 for (iterator copy(first); copy != last; copy = first)
                 {
                     first++;

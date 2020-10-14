@@ -1,6 +1,6 @@
-#include "includes/sequence_containers/List.hpp"
 #include <list>
-#include "test.cpp"
+#include "../includes/sequence_containers/List.hpp"
+#include "test.hpp"
 
 template <typename T>
 void testBasics(const std::list<T>& lBase, const ft::List<T>& lCustom)
@@ -169,7 +169,7 @@ void testList(void)
     ft::List<T> lCustom;
 
     /* Test size(), front(), back() and element comparison at initialization */
-    std::cout << "======= TEST 1 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 1 =======" << std::endl;
     (lBase.size() == lCustom.size()) ? fOK("size()") : fKO("size()");
     (lBase.front() == lCustom.front()) ? fOK("front()") : fKO("front()");
     (lBase.back() == lCustom.back()) ? fOK("back()") : fKO("back()");
@@ -787,25 +787,13 @@ void testList(void)
     /* Test reverse iterators */
     std::cout << std::endl << "======= TEST 60 =======" << std::endl;
     testReverseIterator(lBase, lCustom);
-
 }
 
 
-
-int main()
+void testLists()
 {
-    std::cout << "\033[38;5;202m******************************************************" << std::endl;
+    std::cout <<  std::endl << "\033[38;5;202m******************************************************" << std::endl;
     std::cout << "***************        TEST LIST        **************" << std::endl;
     std::cout << "******************************************************\033[0m" << std::endl;
-
-    std::cout << std::endl;
-    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>       list<char>       <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
-    testList<char>();
-
-    std::cout << std::endl << std::endl;
-    std::cout << "\033[38;5;51m>>>>>>>>>>>>>>>        list<int>       <<<<<<<<<<<<<<<\033[0m" << std::endl << std::endl;
     testList<int>();
-
-    system("leaks a.out");
-    return (0);
 }
