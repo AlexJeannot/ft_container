@@ -3,6 +3,7 @@
 
 # include "Tree.hpp"
 # include <memory>
+# include <iostream>
 
 namespace ft
 {
@@ -360,7 +361,8 @@ namespace ft
 
     /* Relational operators */
     template <class Key, class V>
-    bool operator==(const Map<Key, V>& lhs, const Map<Key, V>& rhs) {
+    bool operator==(const Map<Key, V>& lhs, const Map<Key, V>& rhs)
+    {
         if (lhs.size() != rhs.size())
             return (false);
         typename Map<Key, V>::const_iterator lhs_it(lhs.begin());
@@ -383,7 +385,11 @@ namespace ft
     }
 
     template <class Key, class V>
-    bool operator<(const Map<Key, V>& lhs, const Map<Key, V>& rhs) {
+    bool operator<(const Map<Key, V>& lhs, const Map<Key, V>& rhs)
+    {
+        // std::cout << "lhs.size() = " << lhs.size() << std::endl;
+        // std::cout << "rhs.size() = " << rhs.size() << std::endl;
+
         if (lhs.size() != rhs.size())
             return (lhs.size() < rhs.size());
 

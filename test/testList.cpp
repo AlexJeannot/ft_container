@@ -713,10 +713,10 @@ void testList(void)
 
 
     /* Test relational operators with empty vectors */
-    lBase.clear();
-    lCustom.clear();
-    std::list<T> cmp_lBase;
-    ft::List<T> cmp_lCustom;
+    // lBase.clear();
+    // lCustom.clear();
+    std::list<T> cmp_lBase(lBase);
+    ft::List<T> cmp_lCustom(lCustom);
     std::cout << std::endl << "======= TEST 52 =======" << std::endl;
     testRelationalOperators(lBase, cmp_lBase, lCustom, cmp_lCustom);
 

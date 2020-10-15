@@ -206,16 +206,13 @@ namespace ft
                     throw (std::length_error("Allocation inquiry exceeds maximum supported size"));
                 else if (n > this->_capacity)
                 {
-                    if (this->_size > 0 && this->_capacity > 0)
+                    if (this->_capacity > 0)
                     {
                         pointer tmp_ptr = _alloc.allocate(n);
                         for (size_type count = 0; count < this->_size; count++)
                             this->_alloc.construct(&(tmp_ptr[count]), this->_container[count]);
-                       this->_alloc.deallocate(this->_container, this->_capacity);
-                        this->_container = this->_alloc.allocate(n);
-                        for (size_type count = 0; count < this->_size; count++)
-                            this->_alloc.construct(&(this->_container[count]), tmp_ptr[count]);
-                        this->_alloc.deallocate(tmp_ptr, n);
+                        this->_alloc.deallocate(this->_container, this->_capacity);
+                        this->_container = tmp_ptr;
                     }
                     else
                         this->_container =_alloc.allocate(n);
@@ -291,6 +288,7 @@ namespace ft
                     this->reserve(assign_size);
                 for (size_type count = 0; count < assign_size; count++)
                     this->_alloc.construct(&(this->_container[count]), tmp_ptr[count]);
+                this->_alloc.deallocate(tmp_ptr, assign_size);
                 this->_size = assign_size;
             }
 
@@ -353,6 +351,7 @@ namespace ft
                         this->_alloc.construct(&(*position), tmp_ptr[count]);
                         position++;
                     }
+                    this->_alloc.deallocate(tmp_ptr, insert_size);
                     this->_size += insert_size;
                 }
             }

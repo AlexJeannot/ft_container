@@ -32,6 +32,13 @@ template <typename Key, typename V>
 void testRelationalOperators(const std::map<Key, V>& mBase, const std::map<Key, V>& cmp_mBase,
                             const ft::Map<Key, V>& mCustom, const ft::Map<Key, V>& cmp_mCustom)
 {
+    std::cout << "------------\n";
+    std::cout << "mBase.size() = " << mBase.size() << std::endl;
+    std::cout << "cmp_mBase.size() = " << cmp_mBase.size() << std::endl;
+    std::cout << "------------\n";
+    std::cout << "(mBase < cmp_mBase) >> " << (mBase < cmp_mBase) << std::endl;
+    std::cout << "(mCustom < cmp_mCustom) >> " << (mCustom < cmp_mCustom) << std::endl;
+
     ((mBase == cmp_mBase) == (mCustom == cmp_mCustom)) ? fOK("==") : fKO("==");
     ((mBase != cmp_mBase) == (mCustom != cmp_mCustom)) ? fOK("!=") : fKO("!=");
     ((mBase < cmp_mBase) == (mCustom < cmp_mCustom)) ? fOK("<") : fKO("<");
@@ -303,14 +310,14 @@ void testMap(void)
 
 
     /* Test return key_comp() */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 14 =======" << std::endl;
     (mBase.key_comp()('a', 'g') == mCustom.key_comp()('a', 'g')) ? fOK("value_comp()") : fKO("value_comp()");
 
 
     /* Test returned iterator from find() with existing key */
     itBase = mBase.find(33);
     itCustom = mCustom.find(33);
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 15 =======" << std::endl;
     testBasics(mBase, mCustom);
     (itBase->first == itCustom->first) ? fOK("find()") : fKO("find()");
 
@@ -318,97 +325,103 @@ void testMap(void)
     /* Test returned iterator from find() with not existing key */
     itBase = mBase.find(99);
     itCustom = mCustom.find(99);
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 16 =======" << std::endl;
     testBasics(mBase, mCustom);
     (itCustom == mCustom.end()) ? fOK("find()") : fKO("find()");
 
 
     /* Test returned size_t from count() with existing key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 17 =======" << std::endl;
     (mBase.count(33) == mCustom.count(33)) ? fOK("count()") : fKO("count()");
 
 
     /* Test returned size_t from count() with not existing key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 18 =======" << std::endl;
     (mBase.count(99) == mCustom.count(99)) ? fOK("count()") : fKO("count()");
 
 
     /* Test returned iterator from lower_bound() with lowest key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 19 =======" << std::endl;
     (mBase.lower_bound(20)->first == mCustom.lower_bound(20)->first) ? fOK("lower_bound()") : fKO("lower_bound()");
     
 
     /* Test returned iterator from lower_bound() with exact key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 20 =======" << std::endl;
     (mBase.lower_bound(44)->first == mCustom.lower_bound(44)->first) ? fOK("lower_bound()") : fKO("lower_bound()");
     
 
     /* Test returned iterator from lower_bound() with middle key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 21 =======" << std::endl;
     (mBase.lower_bound(50)->first == mCustom.lower_bound(50)->first) ? fOK("lower_bound()") : fKO("lower_bound()");
     
     
     /* Test returned iterator from lower_bound() with no existing key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 22 =======" << std::endl;
     (mCustom.lower_bound(99) == mCustom.end()) ? fOK("lower_bound()") : fKO("lower_bound()");
     
     
     /* Test returned iterator from upper_bound() with lowest key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 23 =======" << std::endl;
     (mBase.upper_bound(20)->first == mCustom.upper_bound(20)->first) ? fOK("upper_bound()") : fKO("upper_bound()");
 
 
     /* Test returned iterator from upper_bound() with exact key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 24 =======" << std::endl;
     (mBase.upper_bound(44)->first == mCustom.upper_bound(44)->first) ? fOK("upper_bound()") : fKO("upper_bound()");
     
 
     /* Test returned iterator from upper_bound() with middle key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 25 =======" << std::endl;
     (mBase.upper_bound(50)->first == mCustom.upper_bound(50)->first) ? fOK("upper_bound()") : fKO("upper_bound()");
     
     
     /* Test returned iterator from upper_bound() with no existing key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 26 =======" << std::endl;
     (mCustom.upper_bound(99) == mCustom.end()) ? fOK("upper_bound()") : fKO("upper_bound()");
 
 
     /* Test returned iterator from equal_range() with lowest key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 27 =======" << std::endl;
     (mBase.equal_range(20).first->first == mCustom.equal_range(20).first->first
     && mBase.equal_range(20).second->first == mCustom.equal_range(20).second->first) ? fOK("equal_range()") : fKO("equal_range()");
 
 
     /* Test returned iterator from equal_range() with exact key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 28 =======" << std::endl;
     (mBase.equal_range(44).first->first == mCustom.equal_range(44).first->first
     && mBase.equal_range(44).second->first == mCustom.equal_range(44).second->first) ? fOK("equal_range()") : fKO("equal_range()");
     
 
     /* Test returned iterator from equal_range() with middle key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 29 =======" << std::endl;
     (mBase.equal_range(50).first->first == mCustom.equal_range(50).first->first
     && mBase.equal_range(50).second->first == mCustom.equal_range(50).second->first) ? fOK("equal_range()") : fKO("equal_range()");
     
     
     /* Test returned iterator from equal_range() with no existing key */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 30 =======" << std::endl;
     (mCustom.equal_range(99).first == mCustom.end()
     && mCustom.equal_range(99).second == mCustom.end()) ? fOK("equal_range()") : fKO("equal_range()");
 
-    /* Test relationals operators */
-    std::map<Key, V> cmp_mBase;
-    ft::Map<Key, V> cmp_mCustom;
-    cmp_mBase.insert(std::make_pair(1, 40));
-    cmp_mCustom.insert(ft::make_pair(1, 40));
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+
+    /* Test relationals operators with identical maps */
+    std::map<Key, V> cmp_mBase(mBase);
+    ft::Map<Key, V> cmp_mCustom(mCustom);
+    std::cout << std::endl << "======= TEST 31 =======" << std::endl;
+    testRelationalOperators(mBase, cmp_mBase, mCustom, cmp_mCustom);
+
+
+    /* Test relationals operators with not identical maps */
+    cmp_mBase.insert(std::make_pair(17, 40));
+    cmp_mCustom.insert(ft::make_pair(17, 40));
+    std::cout << std::endl << "======= TEST 32 =======" << std::endl;
     testRelationalOperators(mBase, cmp_mBase, mCustom, cmp_mCustom);
 
 
     /* Test size() and map elements comparison after swap */
     mBase.swap(cmp_mBase);
     mCustom.swap(cmp_mCustom);
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 33 =======" << std::endl;
     testBasics(mBase, mCustom);
 
 
@@ -421,14 +434,13 @@ void testMap(void)
     mCustom.insert(ft::make_pair(15, 1));
     mCustom.insert(ft::make_pair(22, 1));
     mCustom.insert(ft::make_pair(10, 1));
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 34 =======" << std::endl;
     testIterator(mBase, mCustom);
 
 
     /* Test reverse iterators */
-    std::cout << std::endl << "======= TEST 13 =======" << std::endl;
+    std::cout << std::endl << "======= TEST 35 =======" << std::endl;
     testReverseIterator(mBase, mCustom);
-
 }
 
 
