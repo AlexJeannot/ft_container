@@ -565,11 +565,16 @@ void testVector(void)
     testIterator(vBase, vCustom);
 
 
-   /* Test reverse iterators */
-
+    /* Test reverse iterators */
     std::cout << std::endl << "======= TEST 46 =======" << std::endl;
     testReverseIterator(vBase, vCustom);
 
+
+    /* Test iterator constructor */
+    std::vector<T> itBaseVector(vBase.begin(), vBase.end());
+    ft::Vector<T> itCustomVector(vCustom.begin(), vCustom.end());
+    std::cout << std::endl << "======= TEST 47 =======" << std::endl;
+    testBasics(itBaseVector, itCustomVector);
 }
 
 void testVectors()

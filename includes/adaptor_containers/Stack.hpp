@@ -15,8 +15,6 @@ namespace ft
             typedef Container container_type;
             typedef size_t size_type;
 
-            //template <class E, class R>
-            //friend bool operator==(const Stack<E, R>& lhs, const Stack<E, R>& rhs);
 
             /* Constructors, Copy assignement and Destructor */
             Stack(const container_type& container = container_type())
@@ -40,6 +38,7 @@ namespace ft
                 return (*this);
             }
 
+
             /* pure virtual function */
             void pop() {
                 this->_container.pop_back();
@@ -55,12 +54,6 @@ namespace ft
                 return(this->_container.back());
             }
     };
-
-    // template <typename T, typename Container>
-    // bool operator==(const Stack<T, Container>& lhs, const Stack<T, Container>& rhs)
-    // {
-    //     return (lhs._container == rhs._container);
-    // }
 }
 
 #endif

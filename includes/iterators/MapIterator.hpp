@@ -48,11 +48,8 @@ namespace ft
 
             void prevKey(void)
             {
-                //std::cout << "PREV KEY\n";
                 if (this->_iter->hasLeft())
                 {
-                    //std::cout << "prev Left\n";
-
                     this->_iter = this->_iter->getLeft();
                     while (this->_iter->hasRight())
                         this->_iter = this->_iter->getRight();
@@ -133,7 +130,9 @@ namespace ft
             bool operator!=(const MapIterator &other) {
                 return (this->_iter != other._iter);
             }
+            
     };
+
 }
 
 #endif

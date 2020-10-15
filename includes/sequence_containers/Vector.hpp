@@ -94,6 +94,14 @@ namespace ft
                     this->assign(n, val);
             }
 
+            template<class InputIt>
+            Vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type(),
+            typename std::enable_if<!std::is_integral<InputIt>::value, InputIt>::type* = nullptr)
+            : _container(nullptr), _size(0), _capacity(0), _alloc(alloc)
+            {
+                this->assign(first, last);
+            }
+
             Vector(const Vector &other)
             : _container(nullptr), _size(0), _capacity(0), _alloc(other._alloc)
             {
@@ -219,6 +227,7 @@ namespace ft
                     this->_capacity = n;
                 }
             }
+
 
             /* Element access member functions */
             reference operator[](size_type n) {

@@ -102,6 +102,7 @@ namespace ft
                     return (this->_iter != other._iter);
                 }
     };
+    
 }
 
 #endif

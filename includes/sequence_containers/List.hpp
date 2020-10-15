@@ -87,6 +87,15 @@ namespace ft
                     this->assign(n, val);
             }
 
+            template<class InputIt>
+            List(InputIt first, InputIt last, const allocator_type& alloc = allocator_type(),
+            typename std::enable_if<!std::is_integral<InputIt>::value, InputIt>::type* = nullptr)
+            : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(alloc)
+            {
+                setup_border();
+                this->assign(first, last);
+            }
+
             List(const List &other)
             : _first(nullptr), _begin(nullptr), _end(nullptr), _size(0), _alloc(other._alloc)
             {
@@ -167,11 +176,8 @@ namespace ft
                 return this->_size;
             }
 
-            size_type max_size(void) const
-            {
+            size_type max_size(void) const {
                 return (std::numeric_limits<size_type>::max() / sizeof(list_elem));
-                //return (std::min((size_type) std::numeric_limits<difference_type>::max(),
-                //        std::numeric_limits<size_type>::max() / sizeof(list_elem)));
             }
 
             bool empty() const {
@@ -370,15 +376,10 @@ namespace ft
                     iterator last(this->end());
                     for (next++; first != last; next++)
                     {
-                        //std::cout << "*first = " << *first << std::endl;
-                        //std::cout << "*next = " << *next << std::endl;
                         this->_alloc.destroy(first.get_elem());
                         this->_alloc.deallocate(first.get_elem(), 1);
                         first = next;
                     }
-                    //std::cout << "this->_end->get_prev_elem()->get_value() = " << this->_end->get_prev_elem()->get_value() << std::endl;
-                    //this->_alloc.destroy(this->_end->get_prev_elem());
-                    //this->_alloc.deallocate(this->_end->get_prev_elem(), 1);
                     this->reset_border();
                 }
             }

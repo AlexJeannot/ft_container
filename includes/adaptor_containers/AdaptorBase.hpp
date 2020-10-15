@@ -20,7 +20,10 @@ namespace ft
         public:
             /* Constructor and Destructor */
             AdaptorBase(const container_type& container = container_type())
-            : _container(container) {}
+            : _container(container)
+            {
+
+            }
 
             virtual ~AdaptorBase() {}
 
@@ -65,38 +68,32 @@ namespace ft
     };
 
     template <typename T, typename Container>
-    bool operator==(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs)
-    {
+    bool operator==(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs) {
         return (lhs._container == rhs._container);
     }
 
     template <typename T, typename Container>
-    bool operator!=(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs)
-    {
+    bool operator!=(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs) {
         return (lhs._container != rhs._container);
     }
 
     template <typename T, typename Container>
-    bool operator<(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs)
-    {
+    bool operator<(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs) {
         return (lhs._container < rhs._container);
     }
 
     template <typename T, typename Container>
-    bool operator<=(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs)
-    {
+    bool operator<=(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs) {
         return (lhs._container <= rhs._container);
     }
 
     template <typename T, typename Container>
-    bool operator>(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs)
-    {
+    bool operator>(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs) {
         return (lhs._container > rhs._container);
     }
 
     template <typename T, typename Container>
-    bool operator>=(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs)
-    {
+    bool operator>=(const AdaptorBase<T, Container>& lhs, const AdaptorBase<T, Container>& rhs) {
         return (lhs._container >= rhs._container);
     }
 }

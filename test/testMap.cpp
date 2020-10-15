@@ -32,13 +32,6 @@ template <typename Key, typename V>
 void testRelationalOperators(const std::map<Key, V>& mBase, const std::map<Key, V>& cmp_mBase,
                             const ft::Map<Key, V>& mCustom, const ft::Map<Key, V>& cmp_mCustom)
 {
-    std::cout << "------------\n";
-    std::cout << "mBase.size() = " << mBase.size() << std::endl;
-    std::cout << "cmp_mBase.size() = " << cmp_mBase.size() << std::endl;
-    std::cout << "------------\n";
-    std::cout << "(mBase < cmp_mBase) >> " << (mBase < cmp_mBase) << std::endl;
-    std::cout << "(mCustom < cmp_mCustom) >> " << (mCustom < cmp_mCustom) << std::endl;
-
     ((mBase == cmp_mBase) == (mCustom == cmp_mCustom)) ? fOK("==") : fKO("==");
     ((mBase != cmp_mBase) == (mCustom != cmp_mCustom)) ? fOK("!=") : fKO("!=");
     ((mBase < cmp_mBase) == (mCustom < cmp_mCustom)) ? fOK("<") : fKO("<");
@@ -441,6 +434,13 @@ void testMap(void)
     /* Test reverse iterators */
     std::cout << std::endl << "======= TEST 35 =======" << std::endl;
     testReverseIterator(mBase, mCustom);
+
+
+    /* Test iterator constructor */
+    std::map<Key, V> itBaseMap(mBase.begin(), mBase.end());
+    ft::Map<Key, V> itCustomMap(mCustom.begin(), mCustom.end());
+    std::cout << std::endl << "======= TEST 36 =======" << std::endl;
+    testBasics(itBaseMap, itCustomMap);
 }
 
 

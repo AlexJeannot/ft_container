@@ -787,6 +787,13 @@ void testList(void)
     /* Test reverse iterators */
     std::cout << std::endl << "======= TEST 60 =======" << std::endl;
     testReverseIterator(lBase, lCustom);
+
+
+    /* Test iterator constructor */
+    std::list<T> itBaseList(lBase.begin(), lBase.end());
+    ft::List<T> itCustomList(lCustom.begin(), lCustom.end());
+    std::cout << std::endl << "======= TEST 47 =======" << std::endl;
+    testBasics(itBaseList, itCustomList);
 }
 
 

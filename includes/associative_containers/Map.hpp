@@ -73,6 +73,15 @@ namespace ft
                 this->_tree.clearBorders();
             }
 
+            template<class InputIt>
+            Map(InputIt first, InputIt last,
+            const key_compare& cmp = key_compare(), const allocator_type& alloc = allocator_type(),
+            typename std::enable_if<!std::is_integral<InputIt>::value, InputIt>::type* = nullptr)
+            : _tree(), _cmp(cmp), _size(0), _alloc(alloc) 
+            {
+                this->insert(first, last);
+            }
+
             Map& operator=(const Map& other)
             {
                 if (this != &other)
@@ -207,7 +216,6 @@ namespace ft
                 for(; first != last; first++)
                     this->insert(make_pair(first->first, first->second));
             }
-
 
             void erase(iterator position)
             {
@@ -360,14 +368,14 @@ namespace ft
 
 
     /* Relational operators */
-    template <class Key, class V>
-    bool operator==(const Map<Key, V>& lhs, const Map<Key, V>& rhs)
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator==(const Map<Key, T, Compare, Alloc>& lhs, const Map<Key, T, Compare, Alloc>& rhs)
     {
         if (lhs.size() != rhs.size())
             return (false);
-        typename Map<Key, V>::const_iterator lhs_it(lhs.begin());
-        typename Map<Key, V>::const_iterator rhs_it(rhs.begin());
-        typename Map<Key, V>::const_iterator end(lhs.end());
+        typename Map<Key, T, Compare, Alloc>::const_iterator lhs_it(lhs.begin());
+        typename Map<Key, T, Compare, Alloc>::const_iterator rhs_it(rhs.begin());
+        typename Map<Key, T, Compare, Alloc>::const_iterator end(lhs.end());
         while (lhs_it != end)
         {
             if (lhs_it->first != rhs_it->first
@@ -379,54 +387,53 @@ namespace ft
         return (true);
     }
 
-    template <class Key, class V>
-    bool operator!=(const Map<Key, V>& lhs, const Map<Key, V>& rhs) {
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator!=(const Map<Key, T, Compare, Alloc>& lhs, const Map<Key, T, Compare, Alloc>& rhs) {
         return (!(lhs == rhs));
     }
 
-    template <class Key, class V>
-    bool operator<(const Map<Key, V>& lhs, const Map<Key, V>& rhs)
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator<(const Map<Key, T, Compare, Alloc>& lhs, const Map<Key, T, Compare, Alloc>& rhs)
     {
-        // std::cout << "lhs.size() = " << lhs.size() << std::endl;
-        // std::cout << "rhs.size() = " << rhs.size() << std::endl;
+        Compare cmp;
+        typename Map<Key, T, Compare, Alloc>::const_iterator lhs_it(lhs.begin());
+        typename Map<Key, T, Compare, Alloc>::const_iterator rhs_it(rhs.begin());
+        typename Map<Key, T, Compare, Alloc>::const_iterator lhs_end(lhs.end());
+        typename Map<Key, T, Compare, Alloc>::const_iterator rhs_end(rhs.end());
 
-        if (lhs.size() != rhs.size())
-            return (lhs.size() < rhs.size());
-
-        typename Map<Key, V>::const_iterator lhs_it(lhs.begin());
-        typename Map<Key, V>::const_iterator rhs_it(rhs.begin());
-        typename Map<Key, V>::const_iterator end(lhs.end());
-        while (lhs_it != end)
+        while (lhs_it != lhs_end && rhs_it != rhs_end)
         {
             if (lhs_it->first != rhs_it->first)
-                return (lhs_it->first < rhs_it->first);
+                return (cmp(lhs_it->first, rhs_it->first));
             if (lhs_it->second != rhs_it->second)
-                return (lhs_it->second < rhs_it->second);
+                return (cmp(lhs_it->second, rhs_it->second));
             lhs_it++;
             rhs_it++;
         }
+        if (rhs_it != rhs_end)
+            return (true);
         return (false);
     }
 
-    template <class Key, class V>
-    bool operator>(const Map<Key, V>& lhs, const Map<Key, V>& rhs) {
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator>(const Map<Key, T, Compare, Alloc>& lhs, const Map<Key, T, Compare, Alloc>& rhs) {
         return (!(lhs < rhs || lhs == rhs));
     }
 
-    template <class Key, class V>
-    bool operator<=(const Map<Key, V>& lhs, const Map<Key, V>& rhs) {
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator<=(const Map<Key, T, Compare, Alloc>& lhs, const Map<Key, T, Compare, Alloc>& rhs) {
         return (!(lhs > rhs));
     }
 
-    template <class Key, class V>
-    bool operator>=(const Map<Key, V>& lhs, const Map<Key, V>& rhs) {
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator>=(const Map<Key, T, Compare, Alloc>& lhs, const Map<Key, T, Compare, Alloc>& rhs) {
         return (!(lhs < rhs));
     }
 
 
     /* Swap */
-    template <class Key, class V>
-    void swap(Map<Key, V>& x, Map<Key, V>& y) {
+    template< class Key, class T, class Compare, class Alloc >
+    void swap(Map<Key, T, Compare, Alloc>& x, Map<Key, T, Compare, Alloc>& y) {
         x.swap(y);
     }
 }

@@ -115,11 +115,7 @@ namespace ft
                 this->_next_elem = elem;
             }
 
-
-
-
     };
-
 
 }
 

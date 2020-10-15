@@ -15,6 +15,7 @@ namespace ft
             typedef Container container_type;
             typedef size_t size_type;
 
+
             /* Constructors, Copy assignement and Destructor */
             Queue(const container_type& container = container_type())
             : AdaptorBase(container)
@@ -36,6 +37,7 @@ namespace ft
                     this->_container = other._container;
                 return (*this);
             }
+
 
             /* pure virtual function */
             void pop() {

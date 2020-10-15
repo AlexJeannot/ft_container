@@ -561,6 +561,12 @@ void testDeque(void)
     std::cout << std::endl << "======= TEST 45 =======" << std::endl;
     testReverseIterator(dBase, dCustom);
 
+
+    /* Test iterator constructor */
+    std::deque<T> itBaseDeque(dBase.begin(), dBase.end());
+    ft::Deque<T> itCustomDeque(dCustom.begin(), dCustom.end());
+    std::cout << std::endl << "======= TEST 46 =======" << std::endl;
+    testBasics(itBaseDeque, itCustomDeque);
 }
 
 void testDeques()

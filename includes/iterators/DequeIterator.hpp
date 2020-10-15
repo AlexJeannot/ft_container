@@ -21,8 +21,11 @@ namespace ft
         public:
             /* Constructor, Copy assignement and Destructor */
             DequeIterator(void) : _iter(nullptr) {}
+
             DequeIterator(pointer elem) : _iter(elem) {}
+
             DequeIterator(const DequeIterator &other) : _iter(other._iter) {}
+
             DequeIterator &operator=(const DequeIterator &other)
             {
                 if (this != &other)
@@ -134,6 +137,9 @@ namespace ft
             bool operator>=(const DequeIterator &other) {
                 return (this->_iter >= other._iter);
             }
+
     };
+
 }
+
 #endif
